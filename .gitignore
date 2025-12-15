@@ -27,6 +27,11 @@ yarn-error.log
 .env.local
 .env.*.local
 
+# API Keys (보안)
+data/kakao_config.php
+data/*_config.php
+!data/kakao_config.php.example
+
 # Database
 *.sql
 *.sqlite

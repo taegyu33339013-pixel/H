@@ -78,6 +78,7 @@ function create_tables() {
         `address` varchar(255) NOT NULL COMMENT '주소',
         `region1` varchar(20) DEFAULT NULL COMMENT '시/도',
         `region2` varchar(50) DEFAULT NULL COMMENT '시/군/구',
+        `region3` varchar(50) DEFAULT NULL COMMENT '읍/면/동',
         `phone` varchar(20) DEFAULT NULL COMMENT '전화번호',
         `latitude` decimal(10,7) DEFAULT NULL COMMENT '위도',
         `longitude` decimal(10,7) DEFAULT NULL COMMENT '경도',
@@ -88,9 +89,25 @@ function create_tables() {
         PRIMARY KEY (`store_id`),
         KEY `idx_name` (`store_name`),
         KEY `idx_region` (`region1`, `region2`),
+        KEY `idx_region3` (`region3`),
         KEY `idx_wins` (`wins_1st` DESC, `wins_2nd` DESC),
         KEY `idx_address` (`address`(100))
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='로또 판매점 정보'");
+    
+    // 기존 테이블에 region3 컬럼 추가 (없는 경우)
+    $check_region3 = sql_query("SHOW COLUMNS FROM g5_lotto_store LIKE 'region3'", false);
+    if (!$check_region3 || sql_num_rows($check_region3) == 0) {
+        sql_query("ALTER TABLE g5_lotto_store 
+                   ADD COLUMN `region3` varchar(50) DEFAULT NULL COMMENT '읍/면/동' AFTER `region2`");
+        sync_log("region3 컬럼 추가 완료");
+    }
+    
+    // region3 인덱스 추가 (없는 경우)
+    $check_idx_region3 = sql_query("SHOW INDEXES FROM g5_lotto_store WHERE Key_name = 'idx_region3'", false);
+    if (!$check_idx_region3 || sql_num_rows($check_idx_region3) == 0) {
+        sql_query("ALTER TABLE g5_lotto_store ADD INDEX `idx_region3` (`region3`)");
+        sync_log("idx_region3 인덱스 추가 완료");
+    }
     
     // g5_lotto_store_win 테이블
     sql_query("CREATE TABLE IF NOT EXISTS `g5_lotto_store_win` (

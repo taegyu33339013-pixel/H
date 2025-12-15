@@ -478,9 +478,9 @@ function li_save_store($store) {
                    (store_name, address, region1, region2, region3, phone, wins_1st, wins_2nd, created_at, updated_at) 
                    VALUES ('{$name}', '{$address}', '{$region1}', '{$region2}', '{$region3}', '{$phone}', 0, 0, NOW(), NOW())");
     } else {
-        sql_query("INSERT INTO g5_lotto_store 
-                   (store_name, address, region1, region2, phone, wins_1st, wins_2nd, created_at, updated_at) 
-                   VALUES ('{$name}', '{$address}', '{$region1}', '{$region2}', '{$phone}', 0, 0, NOW(), NOW())");
+    sql_query("INSERT INTO g5_lotto_store 
+               (store_name, address, region1, region2, phone, wins_1st, wins_2nd, created_at, updated_at) 
+               VALUES ('{$name}', '{$address}', '{$region1}', '{$region2}', '{$phone}', 0, 0, NOW(), NOW())");
     }
     
     return sql_insert_id();
