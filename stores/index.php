@@ -320,6 +320,11 @@ $total_pages = ceil($total_count / $per_page);
         $store_id = (int)($s['store_id'] ?? 0);
         $wins_1st = (int)($s['wins_1st'] ?? 0);
         $wins_2nd = (int)($s['wins_2nd'] ?? 0);
+        $store_image = !empty($s['store_image']) ? htmlspecialchars($s['store_image']) : '';
+        $store_phone = !empty($s['phone']) ? htmlspecialchars($s['phone']) : '';
+        $opening_hours = !empty($s['opening_hours']) ? htmlspecialchars($s['opening_hours']) : '';
+        $review_rating = !empty($s['review_rating']) ? (float)$s['review_rating'] : min(5, 3 + ($wins_1st * 0.3));
+        $review_count = !empty($s['review_count']) ? (int)$s['review_count'] : ($wins_1st + $wins_2nd);
         
         // 판매점 상세 URL 생성 (지역 계층 구조)
         $store_url = 'https://lottoinsight.ai/stores/';
@@ -333,14 +338,23 @@ $total_pages = ceil($total_count / $per_page);
           $store_region3 = htmlspecialchars($dong_match[1]);
         }
         
-        $json_items[] = '{
+        // Schema.org JSON 생성
+        $schema_json = '{
           "@type": "ListItem",
           "position": ' . ($idx + 1) . ',
           "item": {
             "@type": "LocalBusiness",
             "@id": "' . $store_url . '#store",
             "name": "' . $store_name . '",
-            "description": "로또 판매점 - 1등 ' . $wins_1st . '회, 2등 ' . $wins_2nd . '회 당첨",
+            "description": "로또 판매점 - 1등 ' . $wins_1st . '회, 2등 ' . $wins_2nd . '회 당첨"';
+        
+        // 이미지 추가
+        if ($store_image) {
+          $schema_json .= ',
+            "image": "' . $store_image . '"';
+        }
+        
+        $schema_json .= ',
             "address": {
               "@type": "PostalAddress",
               "streetAddress": "' . $store_address . '",
@@ -352,17 +366,37 @@ $total_pages = ceil($total_count / $per_page);
             },
             "aggregateRating": {
               "@type": "AggregateRating",
-              "ratingValue": "' . min(5, 3 + ($wins_1st * 0.3)) . '",
-              "reviewCount": "' . ($wins_1st + $wins_2nd) . '",
+              "ratingValue": "' . $review_rating . '",
+              "reviewCount": "' . $review_count . '",
               "bestRating": "5",
               "worstRating": "1"
             },
-            "priceRange": "무료",
-            "telephone": "",
+            "priceRange": "무료"';
+        
+        // 전화번호 추가
+        if ($store_phone) {
+          $schema_json .= ',
+            "telephone": "' . $store_phone . '"';
+        }
+        
+        // 영업시간 추가
+        if ($opening_hours) {
+          $schema_json .= ',
+            "openingHoursSpecification": {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+              "opens": "' . (preg_match('/(\d{2}:\d{2})/', $opening_hours, $open_match) ? $open_match[1] : '09:00') . '",
+              "closes": "' . (preg_match('/-(\d{2}:\d{2})/', $opening_hours, $close_match) ? $close_match[1] : '22:00') . '"
+            }';
+        }
+        
+        $schema_json .= ',
             "url": "' . $store_url . '",
             "sameAs": []
           }
         }';
+        
+        $json_items[] = $schema_json;
       }
       echo implode(",\n      ", $json_items);
       ?>
@@ -681,7 +715,7 @@ $total_pages = ceil($total_count / $per_page);
 
     .store-table-header {
       display: grid;
-      grid-template-columns: 50px 1fr 100px 100px;
+      grid-template-columns: 50px 80px 1fr 100px 100px;
       padding: 12px 24px;
       background: rgba(0, 0, 0, 0.2);
       font-size: 0.8rem;
@@ -693,13 +727,14 @@ $total_pages = ceil($total_count / $per_page);
 
     .store-row {
       display: grid;
-      grid-template-columns: 50px 1fr 100px 100px;
+      grid-template-columns: 50px 80px 1fr 100px 100px;
       padding: 16px 24px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.04);
       align-items: center;
       text-decoration: none;
       color: inherit;
       transition: background 0.2s ease;
+      gap: 12px;
     }
 
     .store-row:hover {
@@ -721,22 +756,78 @@ $total_pages = ceil($total_count / $per_page);
       color: var(--accent-gold);
     }
 
+    .store-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .store-image-placeholder {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(0, 224, 164, 0.1), rgba(139, 92, 246, 0.1));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
     .store-info {
       display: flex;
       flex-direction: column;
       gap: 6px;
+      min-width: 0;
     }
 
     .store-name {
       font-weight: 600;
       font-size: 0.95rem;
       letter-spacing: -0.01em;
+      margin-bottom: 2px;
     }
 
     .store-address {
       font-size: 0.85rem;
       color: var(--text-muted);
       line-height: 1.5;
+      margin-bottom: 4px;
+    }
+
+    .store-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .store-phone {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent-cyan);
+    }
+
+    .store-hours {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+    }
+
+    .store-rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent-gold);
     }
 
     .store-region {
@@ -964,9 +1055,21 @@ $total_pages = ceil($total_count / $per_page);
 
       .store-table-header,
       .store-row {
-        grid-template-columns: 40px 1fr 70px 70px;
+        grid-template-columns: 40px 60px 1fr 70px 70px;
         padding: 12px 16px;
         font-size: 0.85rem;
+        gap: 8px;
+      }
+
+      .store-image,
+      .store-image-placeholder {
+        width: 50px;
+        height: 50px;
+      }
+
+      .store-meta {
+        font-size: 0.75rem;
+        gap: 6px;
       }
 
       .store-wins-count {
@@ -1034,9 +1137,26 @@ $total_pages = ceil($total_count / $per_page);
     @media (max-width: 480px) {
       .store-table-header,
       .store-row {
-        grid-template-columns: 36px 1fr 60px 60px;
+        grid-template-columns: 36px 50px 1fr 60px 60px;
         padding: 10px 12px;
-        gap: 8px;
+        gap: 6px;
+      }
+
+      .store-image,
+      .store-image-placeholder {
+        width: 45px;
+        height: 45px;
+      }
+
+      .store-image-placeholder {
+        font-size: 1.2rem;
+      }
+
+      .store-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        font-size: 0.7rem;
       }
 
       .store-rank {
@@ -1184,6 +1304,7 @@ $total_pages = ceil($total_count / $per_page);
       
       <div class="store-table-header">
         <div>순위</div>
+        <div>이미지</div>
         <div>판매점</div>
         <div style="text-align: center;">1등</div>
         <div style="text-align: center;">2등</div>
@@ -1195,6 +1316,11 @@ $total_pages = ceil($total_count / $per_page);
         $store_region2 = $store['region2'] ?? $region2 ?? '';
         $store_name = $store['store_name'] ?? $store['name'] ?? '';
         $store_id = $store['store_id'] ?? 0;
+        $store_image = $store['store_image'] ?? '';
+        $store_phone = $store['phone'] ?? '';
+        $opening_hours = $store['opening_hours'] ?? '';
+        $review_rating = !empty($store['review_rating']) ? (float)$store['review_rating'] : null;
+        $review_count = !empty($store['review_count']) ? (int)$store['review_count'] : null;
         
         $store_link = '/stores/';
         if ($store_region1) $store_link .= urlencode($store_region1) . '/';
@@ -1203,14 +1329,32 @@ $total_pages = ceil($total_count / $per_page);
       ?>
         <a href="<?= $store_link ?>" class="store-row">
           <div class="store-rank <?= $i < 3 ? 'top3' : '' ?>"><?= $offset + $i + 1 ?></div>
+          <div>
+            <?php if (!empty($store_image)): ?>
+              <img src="<?= htmlspecialchars($store_image) ?>" alt="<?= htmlspecialchars($store_name) ?>" class="store-image" loading="lazy">
+            <?php else: ?>
+              <div class="store-image-placeholder">🏪</div>
+            <?php endif; ?>
+          </div>
           <div class="store-info">
             <div>
               <?php if (!empty($store['region1'])): ?>
-                <span class="store-region"><?= $store['region1'] ?></span>
+                <span class="store-region"><?= htmlspecialchars($store['region1']) ?></span>
               <?php endif; ?>
               <span class="store-name"><?= htmlspecialchars($store['store_name']) ?></span>
             </div>
             <div class="store-address"><?= htmlspecialchars($store['address']) ?></div>
+            <div class="store-meta">
+              <?php if (!empty($store_phone)): ?>
+                <span class="store-phone">📞 <?= htmlspecialchars($store_phone) ?></span>
+              <?php endif; ?>
+              <?php if (!empty($opening_hours)): ?>
+                <span class="store-hours">🕐 <?= htmlspecialchars($opening_hours) ?></span>
+              <?php endif; ?>
+              <?php if ($review_rating !== null && $review_count !== null && $review_count > 0): ?>
+                <span class="store-rating">⭐ <?= number_format($review_rating, 1) ?> (<?= number_format($review_count) ?>)</span>
+              <?php endif; ?>
+            </div>
           </div>
           <div class="store-wins">
             <div class="store-wins-count gold"><?= $store['wins_1st'] ?? 0 ?></div>
