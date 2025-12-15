@@ -415,56 +415,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
   <link rel="stylesheet" href="/styles/shared.css">
 
   <style>
-    /* ===== 밝은 테마 변수 정의 (40~60대 가독성 최적화) ===== */
-    :root {
-      --bg-primary: #ffffff;
-      --bg-secondary: #f8f9fa;
-      --bg-tertiary: #f1f3f5;
-      --bg-card: #ffffff;
-      --bg-card-hover: #f8f9fa;
-      
-      --text-primary: #1a1a1a;
-      --text-secondary: #4a5568;
-      --text-muted: #718096;
-      --text-dark: #000000;
-      
-      --border-light: #e2e8f0;
-      --border-medium: #cbd5e0;
-      --border-dark: #a0aec0;
-      
-      --accent-primary: #0066cc;
-      --accent-secondary: #00a86b;
-      --accent-gold: #d97706;
-      --accent-red: #dc2626;
-      
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-      --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
-      
-      --font-size-base: 16px;
-      --font-size-lg: 18px;
-      --font-size-xl: 20px;
-      --font-size-2xl: 24px;
-      --font-size-3xl: 28px;
-      
-      --line-height-relaxed: 1.7;
-      --line-height-normal: 1.6;
-    }
-    
     html, body {
       overflow-x: hidden;
-      background-color: var(--bg-secondary);
     }
     
     body {
       min-height: 100vh;
       width: 100%;
       max-width: 100vw;
-      background-color: var(--bg-secondary);
-      color: var(--text-primary);
-      font-size: var(--font-size-base);
-      line-height: var(--line-height-relaxed);
-      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* ===== 상단 고정 헤더 ===== */
@@ -474,11 +435,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
       left: 0;
       right: 0;
       height: 68px;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(10, 20, 40, 0.9);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border-light);
-      box-shadow: var(--shadow-sm);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       z-index: var(--z-fixed);
       display: flex;
       align-items: center;
@@ -533,54 +493,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
       align-items: center;
       gap: var(--space-2);
       padding: var(--space-2) var(--space-4);
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-light);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: var(--radius-full);
-      font-size: var(--font-size-base);
+      font-size: 0.8rem;
       color: var(--text-secondary);
       transition: all var(--transition-fast);
     }
 
     .credit-badge:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--border-medium);
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.12);
     }
 
     .credit-count {
       font-family: 'Outfit', sans-serif;
       font-weight: 700;
-      color: var(--accent-primary);
-      font-size: var(--font-size-base);
+      color: var(--accent-cyan);
     }
 
     .user-avatar-btn {
-      width: 42px;
-      height: 42px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background: var(--bg-tertiary);
-      border: 2px solid var(--border-light);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       text-decoration: none;
-      font-size: var(--font-size-lg);
+      font-size: 1rem;
       overflow: hidden;
       transition: all var(--transition-normal);
     }
 
     .user-avatar-btn:hover {
-      background: var(--bg-card-hover);
+      background: rgba(255, 255, 255, 0.1);
       transform: scale(1.05);
-      border-color: var(--border-medium);
-      box-shadow: var(--shadow-sm);
+      border-color: rgba(255, 255, 255, 0.15);
     }
 
     .user-avatar-btn.logged-in {
-      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-      border-color: var(--accent-primary);
-      box-shadow: var(--shadow-md);
-      color: #ffffff;
+      background: var(--gradient-cyan);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
     }
 
     .user-avatar-btn img {
@@ -613,19 +570,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
       max-width: 580px;
       margin: 0 auto;
       padding: 88px var(--space-5) 120px;
-      background-color: var(--bg-secondary);
     }
 
     /* ===== 최신 당첨 결과 섹션 ===== */
     .latest-result-section {
-      background: var(--bg-card);
-      border: 2px solid var(--accent-red);
+      background: linear-gradient(145deg, 
+        rgba(17, 29, 50, 0.95) 0%, 
+        rgba(10, 20, 40, 0.98) 100%);
+      border: 1px solid rgba(239, 68, 68, 0.25);
       border-radius: var(--radius-2xl);
       padding: var(--space-5);
       margin-bottom: var(--space-5);
       position: relative;
       overflow: hidden;
-      box-shadow: var(--shadow-lg);
+      box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
     .latest-result-section::before {
@@ -686,9 +646,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
       gap: var(--space-2);
       margin-bottom: var(--space-4);
       padding: var(--space-4);
-      background: var(--bg-tertiary);
+      background: rgba(0, 0, 0, 0.25);
       border-radius: var(--radius-xl);
-      border: 1px solid var(--border-light);
+      border: 1px solid rgba(255, 255, 255, 0.03);
     }
 
     .latest-ball {
@@ -744,42 +704,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
     }
 
     .latest-prize {
-      font-size: var(--font-size-base);
+      font-size: 0.85rem;
       color: var(--text-secondary);
-      font-weight: 500;
     }
 
     .latest-prize strong {
       color: var(--accent-gold);
       font-weight: 700;
-      font-size: var(--font-size-lg);
     }
 
     .latest-link {
-      font-size: var(--font-size-base);
-      color: var(--accent-primary);
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
       text-decoration: none;
       display: flex;
       align-items: center;
       gap: var(--space-1);
       transition: all var(--transition-fast);
-      font-weight: 600;
     }
 
     .latest-link:hover {
-      color: var(--accent-secondary);
+      color: var(--accent-cyan-light);
       transform: translateX(2px);
-      text-decoration: underline;
     }
 
     /* ===== AI vs 실제 비교 섹션 ===== */
     .ai-comparison-section {
-      background: var(--bg-card);
-      border: 2px solid var(--accent-primary);
+      background: linear-gradient(145deg, 
+        rgba(17, 29, 50, 0.95) 0%, 
+        rgba(10, 20, 40, 0.98) 100%);
+      border: 1px solid rgba(0, 255, 204, 0.2);
       border-radius: var(--radius-2xl);
       padding: var(--space-5);
       margin-bottom: var(--space-5);
-      box-shadow: var(--shadow-lg);
+      box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.3),
+        0 0 40px rgba(0, 255, 204, 0.03);
     }
 
     .comparison-header {
@@ -851,6 +811,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
       color: #fff;
       position: relative;
       transition: transform var(--transition-fast);
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
     }
 
     .mini-ball:hover {
@@ -884,8 +845,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
       align-items: center;
       justify-content: space-between;
       padding: var(--space-3) var(--space-4);
-      background: rgba(0, 102, 204, 0.08);
-      border: 2px solid var(--accent-primary);
+      background: rgba(0, 255, 204, 0.08);
+      border: 1px solid rgba(0, 255, 204, 0.15);
       border-radius: var(--radius-lg);
     }
 
@@ -1042,19 +1003,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 
     /* 분석 스타일 선택 */
     .style-section {
-      background: var(--bg-card);
-      border: 2px solid var(--border-light);
+      background: rgba(17, 29, 50, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 20px;
       padding: 24px;
       margin-bottom: 24px;
-      box-shadow: var(--shadow-md);
     }
 
     .style-title {
-      font-size: var(--font-size-lg);
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -1120,15 +1080,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
     }
 
     .style-name {
-      font-size: var(--font-size-base);
+      font-size: 0.85rem;
       font-weight: 600;
       color: var(--text-primary);
       display: block;
     }
 
     .style-btn.active .style-name {
-      color: var(--accent-primary);
-      font-weight: 700;
+      color: var(--accent-cyan);
     }
 
     .style-desc {
@@ -1158,24 +1117,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
     }
 
     .style-btn.active .style-check {
-      background: var(--accent-primary);
-      border-color: var(--accent-primary);
-      color: #ffffff;
+      background: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+      color: var(--primary-dark);
     }
 
     .style-selected-count {
       text-align: center;
-      font-size: var(--font-size-base);
-      color: var(--text-secondary);
-      padding-top: 12px;
-      border-top: 2px solid var(--border-light);
-      font-weight: 600;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .style-selected-count span {
-      color: var(--accent-primary);
+      color: var(--accent-cyan);
       font-weight: 700;
-      font-size: var(--font-size-lg);
     }
 
     /* 분석 시작 버튼 */
@@ -1185,27 +1142,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 
     .analyze-btn {
       width: 100%;
-      padding: 22px;
-      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+      padding: 20px;
+      background: var(--gradient-cyan);
       border: none;
       border-radius: 16px;
       font-family: 'Outfit', sans-serif;
-      font-size: var(--font-size-xl);
+      font-size: 1.1rem;
       font-weight: 700;
-      color: #ffffff;
+      color: var(--primary-dark);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 10px 40px rgba(0, 224, 164, 0.3);
       transition: all 0.3s ease;
-      min-height: 60px;
     }
 
     .analyze-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 15px 50px rgba(0, 102, 204, 0.4);
+      box-shadow: 0 15px 50px rgba(0, 224, 164, 0.4);
     }
 
     .analyze-btn:disabled {
@@ -1230,11 +1186,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 
     /* 이전 분석 내역 */
     .history-section {
-      background: var(--bg-card);
-      border: 2px solid var(--border-light);
+      background: rgba(17, 29, 50, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 20px;
       padding: 24px;
-      box-shadow: var(--shadow-md);
     }
 
     .history-title {
@@ -1265,19 +1220,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 18px;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-light);
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.03);
       border-radius: 12px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: background 0.3s ease;
     }
 
     .history-item:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--border-medium);
-      box-shadow: var(--shadow-sm);
-      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.06);
     }
 
     .history-numbers {
@@ -1310,14 +1261,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 18px;
-      background: rgba(0, 102, 204, 0.1);
-      border: 2px solid var(--accent-primary);
+      padding: 8px 16px;
+      background: rgba(0, 224, 164, 0.1);
+      border: 1px solid rgba(0, 224, 164, 0.2);
       border-radius: 50px;
-      font-size: var(--font-size-base);
-      color: var(--accent-primary);
+      font-size: 0.85rem;
+      color: var(--accent-cyan);
       margin-bottom: 16px;
-      font-weight: 700;
     }
 
     .result-intro h2 {
@@ -1354,11 +1304,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 12px 18px;
-      background: var(--bg-tertiary);
-      border: 2px solid var(--border-light);
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 12px;
-      font-size: var(--font-size-base);
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--text-secondary);
       cursor: pointer;
@@ -1367,15 +1317,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
     }
 
     .result-nav-btn:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--border-medium);
+      background: rgba(255, 255, 255, 0.08);
     }
 
     .result-nav-btn.active {
-      background: rgba(0, 102, 204, 0.1);
-      border-color: var(--accent-primary);
-      color: var(--accent-primary);
-      font-weight: 700;
+      background: rgba(0, 224, 164, 0.15);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
     }
 
     /* 결과 카드 */
@@ -2076,14 +2024,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
       visibility: visible;
     }
 
-    .loading-container {
-      background: var(--bg-card);
-      border: 2px solid var(--accent-primary);
-      border-radius: 24px;
-      padding: 48px 40px;
-      max-width: 500px;
-      width: 90%;
-      box-shadow: var(--shadow-lg);
+    .loading-content {
+      text-align: center;
+      padding: 40px;
     }
 
     .loading-header {
