@@ -47,25 +47,29 @@
 
 ## 설치 방법
 
-1. 프로젝트 클론
+### 빠른 시작 (5분)
 ```bash
-git clone [repository-url]
-cd 로또X_20251215
+# 1. 데이터베이스 설정
+# data/dbconfig.php 파일 수정
+
+# 2. 그누보드 설치
+# 웹 브라우저에서 /install/ 접속
+
+# 3. 로또 테이블 생성
+php cron/lotto_store_sync.php
+
+# 4. 데이터 수집
+php cron/lotto_seed.php              # 당첨번호
+php cron/lotto_store_sync.php all     # 판매점
+
+# 5. 설치 확인
+php install/check_installation.php
 ```
 
-2. 데이터베이스 설정
-- `common.php`에서 데이터베이스 연결 정보 설정
-
-3. 의존성 설치 (필요시)
-```bash
-composer install
-```
-
-4. 권한 설정
-```bash
-chmod 755 data/
-chmod 755 files/
-```
+### 상세 가이드
+- **전체 설치 가이드**: [`INSTALLATION_GUIDE.md`](INSTALLATION_GUIDE.md)
+- **빠른 시작**: [`QUICK_START.md`](QUICK_START.md)
+- **체크리스트**: [`SETUP_CHECKLIST.md`](SETUP_CHECKLIST.md)
 
 ## 주요 파일 구조
 
