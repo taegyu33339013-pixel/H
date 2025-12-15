@@ -1,0 +1,206 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <!-- Premium Gradients -->
+    <linearGradient id="bg-deep" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#030711"/>
+      <stop offset="50%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#030711"/>
+    </linearGradient>
+    
+    <linearGradient id="cyan-neon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ffcc"/>
+      <stop offset="50%" style="stop-color:#00d4ff"/>
+      <stop offset="100%" style="stop-color:#00ffcc"/>
+    </linearGradient>
+    
+    <linearGradient id="gold-premium" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" style="stop-color:#ffe066"/>
+      <stop offset="40%" style="stop-color:#ffd700"/>
+      <stop offset="100%" style="stop-color:#e6ac00"/>
+    </linearGradient>
+    
+    <linearGradient id="purple-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#ec4899"/>
+    </linearGradient>
+    
+    <!-- Ball Gradients -->
+    <linearGradient id="ball-yellow" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" style="stop-color:#ffe066"/>
+      <stop offset="50%" style="stop-color:#ffd700"/>
+      <stop offset="100%" style="stop-color:#cc9f00"/>
+    </linearGradient>
+    
+    <linearGradient id="ball-blue" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" style="stop-color:#60a5fa"/>
+      <stop offset="50%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#1d4ed8"/>
+    </linearGradient>
+    
+    <linearGradient id="ball-red" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" style="stop-color:#f87171"/>
+      <stop offset="50%" style="stop-color:#ef4444"/>
+      <stop offset="100%" style="stop-color:#b91c1c"/>
+    </linearGradient>
+    
+    <linearGradient id="ball-purple" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" style="stop-color:#c084fc"/>
+      <stop offset="50%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    
+    <linearGradient id="ball-green" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" style="stop-color:#4ade80"/>
+      <stop offset="50%" style="stop-color:#22c55e"/>
+      <stop offset="100%" style="stop-color:#15803d"/>
+    </linearGradient>
+    
+    <!-- Filters -->
+    <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="ball-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="text-shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+    
+    <!-- Patterns -->
+    <pattern id="grid-pattern" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(0,255,204,0.03)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg-deep)"/>
+  <rect width="1200" height="630" fill="url(#grid-pattern)"/>
+  
+  <!-- Ambient Glow Orbs -->
+  <ellipse cx="200" cy="100" rx="400" ry="300" fill="rgba(0,255,204,0.06)" filter="url(#neon-glow)"/>
+  <ellipse cx="1000" cy="500" rx="350" ry="250" fill="rgba(168,85,247,0.05)" filter="url(#neon-glow)"/>
+  <circle cx="600" cy="315" r="150" fill="rgba(255,215,0,0.03)"/>
+  
+  <!-- Logo Section -->
+  <g transform="translate(80, 70)">
+    <!-- Logo Background -->
+    <rect width="64" height="64" rx="16" fill="url(#cyan-neon)" filter="url(#neon-glow)"/>
+    
+    <!-- Logo Inner -->
+    <g transform="translate(32, 32)">
+      <!-- Ball -->
+      <circle cx="-6" cy="-4" r="16" fill="url(#gold-premium)"/>
+      <ellipse cx="-12" cy="-10" rx="5" ry="3" fill="rgba(255,255,255,0.5)" transform="rotate(-25 -12 -10)"/>
+      
+      <!-- Analysis Ring -->
+      <circle cx="6" cy="6" r="12" fill="none" stroke="#030711" stroke-width="3"/>
+      
+      <!-- AI Nodes -->
+      <circle cx="2" cy="3" r="2" fill="#030711"/>
+      <circle cx="8" cy="8" r="2" fill="#030711"/>
+      <circle cx="10" cy="2" r="2" fill="#030711"/>
+      <line x1="2" y1="3" x2="8" y2="8" stroke="#030711" stroke-width="1"/>
+      <line x1="8" y1="8" x2="10" y2="2" stroke="#030711" stroke-width="1"/>
+      
+      <!-- Handle -->
+      <line x1="14" y1="14" x2="22" y2="22" stroke="#030711" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    
+    <!-- Brand Name -->
+    <text x="80" y="44" font-family="'Segoe UI', Arial, sans-serif" font-size="30" font-weight="800" fill="#ffffff" filter="url(#text-shadow)">로또인사이트</text>
+  </g>
+  
+  <!-- Main Headline -->
+  <g transform="translate(80, 200)" filter="url(#text-shadow)">
+    <text y="0" font-family="'Segoe UI', Arial, sans-serif" font-size="72" font-weight="900" fill="#ffffff">
+      <tspan x="0" dy="0">AI가 분석한</tspan>
+    </text>
+    <text y="85" font-family="'Segoe UI', Arial, sans-serif" font-size="72" font-weight="900" fill="url(#cyan-neon)">
+      <tspan x="0" dy="0">로또 번호 분석</tspan>
+    </text>
+  </g>
+  
+  <!-- Subtitle -->
+  <text x="80" y="400" font-family="'Segoe UI', Arial, sans-serif" font-size="26" fill="#94a3b8">1,201회차 동행복권 공식 데이터 기반 패턴 분석</text>
+  
+  <!-- CTA Badge -->
+  <g transform="translate(80, 440)">
+    <rect width="340" height="56" rx="28" fill="url(#gold-premium)" filter="url(#ball-glow)"/>
+    <text x="170" y="37" font-family="'Segoe UI', Arial, sans-serif" font-size="22" font-weight="700" fill="#030711" text-anchor="middle">🎁 카카오 3초 시작 · 무료 1회</text>
+  </g>
+  
+  <!-- Floating Lotto Balls -->
+  <g transform="translate(700, 200)">
+    <!-- Ball 1 - Yellow -->
+    <g filter="url(#ball-glow)" transform="translate(0, 0)">
+      <circle r="52" fill="url(#ball-yellow)"/>
+      <ellipse cx="-14" cy="-16" rx="16" ry="10" fill="rgba(255,255,255,0.5)" transform="rotate(-30 -14 -16)"/>
+      <text y="12" font-family="'Arial Black', sans-serif" font-size="38" font-weight="900" fill="#fff" text-anchor="middle">7</text>
+    </g>
+    
+    <!-- Ball 2 - Blue -->
+    <g filter="url(#ball-glow)" transform="translate(120, 40)">
+      <circle r="52" fill="url(#ball-blue)"/>
+      <ellipse cx="-14" cy="-16" rx="16" ry="10" fill="rgba(255,255,255,0.4)" transform="rotate(-30 -14 -16)"/>
+      <text y="12" font-family="'Arial Black', sans-serif" font-size="38" font-weight="900" fill="#fff" text-anchor="middle">13</text>
+    </g>
+    
+    <!-- Ball 3 - Red -->
+    <g filter="url(#ball-glow)" transform="translate(240, 10)">
+      <circle r="52" fill="url(#ball-red)"/>
+      <ellipse cx="-14" cy="-16" rx="16" ry="10" fill="rgba(255,255,255,0.4)" transform="rotate(-30 -14 -16)"/>
+      <text y="12" font-family="'Arial Black', sans-serif" font-size="38" font-weight="900" fill="#fff" text-anchor="middle">24</text>
+    </g>
+    
+    <!-- Ball 4 - Purple -->
+    <g filter="url(#ball-glow)" transform="translate(360, 60)">
+      <circle r="52" fill="url(#ball-purple)"/>
+      <ellipse cx="-14" cy="-16" rx="16" ry="10" fill="rgba(255,255,255,0.4)" transform="rotate(-30 -14 -16)"/>
+      <text y="12" font-family="'Arial Black', sans-serif" font-size="38" font-weight="900" fill="#fff" text-anchor="middle">31</text>
+    </g>
+    
+    <!-- Ball 5 - Green -->
+    <g filter="url(#ball-glow)" transform="translate(180, 130)">
+      <circle r="52" fill="url(#ball-green)"/>
+      <ellipse cx="-14" cy="-16" rx="16" ry="10" fill="rgba(255,255,255,0.4)" transform="rotate(-30 -14 -16)"/>
+      <text y="12" font-family="'Arial Black', sans-serif" font-size="38" font-weight="900" fill="#fff" text-anchor="middle">38</text>
+    </g>
+    
+    <!-- Ball 6 - Yellow (Bonus) -->
+    <g filter="url(#ball-glow)" transform="translate(300, 170)">
+      <circle r="52" fill="url(#ball-yellow)"/>
+      <ellipse cx="-14" cy="-16" rx="16" ry="10" fill="rgba(255,255,255,0.5)" transform="rotate(-30 -14 -16)"/>
+      <text y="12" font-family="'Arial Black', sans-serif" font-size="38" font-weight="900" fill="#fff" text-anchor="middle">42</text>
+    </g>
+  </g>
+  
+  <!-- Analysis Stats Mini Graph -->
+  <g transform="translate(950, 420)" opacity="0.6">
+    <rect x="0" y="30" width="16" height="50" rx="4" fill="url(#cyan-neon)"/>
+    <rect x="24" y="10" width="16" height="70" rx="4" fill="url(#cyan-neon)"/>
+    <rect x="48" y="25" width="16" height="55" rx="4" fill="url(#cyan-neon)"/>
+    <rect x="72" y="0" width="16" height="80" rx="4" fill="url(#purple-glow)"/>
+    <rect x="96" y="15" width="16" height="65" rx="4" fill="url(#cyan-neon)"/>
+  </g>
+  
+  <!-- Bottom Bar -->
+  <rect y="580" width="1200" height="50" fill="rgba(0,255,204,0.08)"/>
+  <line y1="580" x2="1200" y2="580" stroke="url(#cyan-neon)" stroke-width="2" opacity="0.3"/>
+  <text x="600" y="612" font-family="'Segoe UI', Arial, sans-serif" font-size="18" fill="#00ffcc" text-anchor="middle">lottoinsight.ai · AI 기반 로또 패턴 분석 서비스</text>
+  
+  <!-- Corner Decorations -->
+  <circle cx="50" cy="50" r="4" fill="#a855f7" opacity="0.5"/>
+  <circle cx="1150" cy="50" r="3" fill="#00ffcc" opacity="0.5"/>
+  <circle cx="1150" cy="580" r="5" fill="#ffd700" opacity="0.4"/>
+</svg>

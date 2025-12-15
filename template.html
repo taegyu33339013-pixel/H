@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>로또인사이트 - AI 기반 로또 번호 분석</title>
+  <meta name="description" content="동행복권 공식 데이터 기반 AI 로또 분석 서비스">
+  
+  <!-- Theme Color (JavaScript로 동적 변경) -->
+  <meta name="theme-color" content="#030711">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+  
+  <!-- Modular CSS -->
+  <link rel="stylesheet" href="/styles/main.css">
+  
+  <!-- Optional: GSAP for enhanced animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+  
+  <!-- Optional: Three.js for 3D balls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+</head>
+<body>
+  <!-- Skip Link (접근성) -->
+  <a href="#main-content" class="skip-link">메인 콘텐츠로 건너뛰기</a>
+  
+  <!-- Navigation -->
+  <nav class="navbar" role="navigation" aria-label="메인 네비게이션">
+    <div class="navbar-inner">
+      <!-- Logo -->
+      <a href="/" class="nav-logo" aria-label="로또인사이트 홈">
+        <span class="nav-logo-icon" aria-hidden="true">🎱</span>
+        <span>로또인사이트</span>
+      </a>
+      
+      <!-- Desktop Menu -->
+      <div class="nav-menu" role="menubar">
+        <a href="/" class="nav-link" role="menuitem" aria-current="page">홈</a>
+        <a href="/result.html" class="nav-link" role="menuitem">AI 분석</a>
+        <a href="#features" class="nav-link" role="menuitem">기능</a>
+        <a href="#stats" class="nav-link" role="menuitem">통계</a>
+        
+        <!-- Theme Toggle -->
+        <button 
+          class="theme-toggle" 
+          type="button"
+          aria-label="라이트 모드로 전환"
+          title="테마 변경"
+        >
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="display: none;">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        
+        <!-- CTA Button -->
+        <a href="/result.html" class="nav-cta">
+          무료 분석 시작
+        </a>
+      </div>
+      
+      <!-- Mobile Menu Button -->
+      <button 
+        class="mobile-menu-btn" 
+        type="button"
+        aria-label="메뉴 열기"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg class="icon-menu" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <svg class="icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="display: none;">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu" aria-hidden="true" role="menu">
+      <a href="/" class="nav-link" role="menuitem">홈</a>
+      <a href="/result.html" class="nav-link" role="menuitem">AI 분석</a>
+      <a href="#features" class="nav-link" role="menuitem">기능</a>
+      <a href="#stats" class="nav-link" role="menuitem">통계</a>
+      <a href="/result.html" class="btn btn-primary btn-lg mt-4">무료 분석 시작</a>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <main id="main-content">
+    <!-- Hero Section -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-container">
+        <div class="hero-content">
+          <!-- Badge -->
+          <div class="section-badge" data-animate="fade-up">
+            <span class="live-dot" aria-hidden="true"></span>
+            <span>1,201회차 데이터 실시간 반영</span>
+          </div>
+          
+          <!-- Title -->
+          <h1 id="hero-title" class="heading-hero" data-animate="fade-up" data-delay="100">
+            <span class="line">AI가 분석하는</span>
+            <span class="line text-gradient-cyan">로또 번호</span>
+          </h1>
+          
+          <!-- Subtitle -->
+          <p class="text-lg text-secondary mb-8" data-animate="fade-up" data-delay="200">
+            23년간 7,206개 당첨번호 패턴을 분석하여<br>
+            균형 잡힌 번호 조합을 제안합니다.
+          </p>
+          
+          <!-- CTA Buttons -->
+          <div class="btn-group" data-animate="fade-up" data-delay="300">
+            <a href="/result.html" class="hero-cta-primary">
+              <span>무료 분석 시작</span>
+              <span aria-hidden="true">→</span>
+            </a>
+            <a href="#how-it-works" class="hero-cta-secondary">
+              작동 방식 보기
+            </a>
+          </div>
+          
+          <!-- Trust Badges -->
+          <div class="flex gap-6 mt-8 text-sm text-muted" data-animate="fade-up" data-delay="400">
+            <span>✓ 무료 1회 제공</span>
+            <span>✓ 카카오 간편 로그인</span>
+            <span>✓ 동행복권 공식 데이터</span>
+          </div>
+        </div>
+        
+        <!-- Hero Card -->
+        <div class="hero-visual" data-animate="scale" data-delay="200">
+          <div class="hero-card">
+            <div class="card-header">
+              <div class="live-badge" role="status">
+                <span class="live-dot" aria-hidden="true"></span>
+                <span>LIVE</span>
+              </div>
+              <span class="text-muted text-sm">최근 당첨번호</span>
+            </div>
+            
+            <!-- Lotto Balls -->
+            <div id="latest-balls" class="ball-container justify-center mb-6" aria-label="1201회 당첨번호">
+              <!-- CSS Fallback (JS로 동적 생성) -->
+              <div class="lotto-ball lotto-ball-yellow">7</div>
+              <div class="lotto-ball lotto-ball-yellow">9</div>
+              <div class="lotto-ball lotto-ball-red">24</div>
+              <div class="lotto-ball lotto-ball-red">27</div>
+              <div class="lotto-ball lotto-ball-gray">35</div>
+              <div class="lotto-ball lotto-ball-gray">36</div>
+              <span class="ball-separator">+</span>
+              <div class="lotto-ball lotto-ball-gray lotto-ball-bonus">37</div>
+            </div>
+            
+            <!-- Stats -->
+            <div class="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <div class="text-2xl font-bold text-gradient-cyan">168</div>
+                <div class="text-xs text-muted">합계</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold">3:3</div>
+                <div class="text-xs text-muted">홀짝</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold">4:2</div>
+                <div class="text-xs text-muted">고저</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" class="section" aria-labelledby="features-title">
+      <div class="container">
+        <header class="section-header">
+          <div class="section-badge">
+            <span>✨ 주요 기능</span>
+          </div>
+          <h2 id="features-title" class="section-title">AI 분석의 차이점</h2>
+          <p class="section-subtitle">단순 랜덤이 아닌, 데이터 기반 과학적 분석</p>
+        </header>
+        
+        <div class="grid grid-cols-3 gap-6" data-stagger="0.1">
+          <!-- Feature 1 -->
+          <article class="card feature-card">
+            <div class="feature-card-icon" aria-hidden="true">📊</div>
+            <h3 class="feature-card-title">통계 기반 분석</h3>
+            <p class="feature-card-description">
+              1,201회차 전체 데이터를 분석하여 빈도, 패턴, 추세를 파악합니다.
+            </p>
+          </article>
+          
+          <!-- Feature 2 -->
+          <article class="card feature-card">
+            <div class="feature-card-icon" aria-hidden="true">⚖️</div>
+            <h3 class="feature-card-title">균형 점수</h3>
+            <p class="feature-card-description">
+              홀짝, 고저, AC값 등 7가지 지표로 번호 조합의 균형을 평가합니다.
+            </p>
+          </article>
+          
+          <!-- Feature 3 -->
+          <article class="card feature-card">
+            <div class="feature-card-icon" aria-hidden="true">🎯</div>
+            <h3 class="feature-card-title">5가지 전략</h3>
+            <p class="feature-card-description">
+              균형형, 과출형, 미출형, 동반형, 색상형 중 원하는 전략을 선택하세요.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Loading Example Section -->
+    <section class="section" aria-labelledby="loading-demo-title">
+      <div class="container container-md">
+        <h2 id="loading-demo-title" class="section-title text-center mb-8">스켈레톤 UI 데모</h2>
+        
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">로딩 상태 예시</h3>
+            <button id="demo-loading-btn" class="btn btn-secondary btn-sm">
+              로딩 시뮬레이션
+            </button>
+          </div>
+          
+          <div id="loading-demo-content" class="card-body">
+            <!-- 실제 콘텐츠 또는 스켈레톤 -->
+            <p>버튼을 클릭하면 스켈레톤 UI가 표시됩니다.</p>
+            <div class="ball-container mt-4">
+              <div class="lotto-ball lotto-ball-yellow">1</div>
+              <div class="lotto-ball lotto-ball-blue">12</div>
+              <div class="lotto-ball lotto-ball-red">23</div>
+              <div class="lotto-ball lotto-ball-gray">34</div>
+              <div class="lotto-ball lotto-ball-green">45</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 3D Ball Demo Section -->
+    <section class="section" aria-labelledby="3d-demo-title">
+      <div class="container container-md">
+        <h2 id="3d-demo-title" class="section-title text-center mb-8">3D 볼 렌더링</h2>
+        
+        <div class="ball-3d-container" id="ball-3d-container" aria-label="3D 로또볼 애니메이션">
+          <!-- Three.js 캔버스가 여기에 렌더링됨 -->
+          <div class="ball-3d-fallback">
+            <p>3D 렌더링을 지원하지 않는 브라우저입니다.</p>
+          </div>
+        </div>
+        
+        <div class="text-center mt-4">
+          <button id="generate-3d-btn" class="btn btn-primary">
+            새 번호 생성
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-content">
+      <nav class="footer-links" aria-label="푸터 네비게이션">
+        <a href="/terms.html" class="footer-link">이용약관</a>
+        <a href="/privacy.html" class="footer-link">개인정보처리방침</a>
+        <a href="mailto:support@lottoinsight.ai" class="footer-link">문의하기</a>
+      </nav>
+      <p class="footer-copy">
+        © 2025 로또인사이트. All rights reserved.<br>
+        <small>본 서비스는 동행복권과 관련이 없으며, 당첨을 보장하지 않습니다.</small>
+      </p>
+    </div>
+  </footer>
+  
+  <!-- Toast Container -->
+  <div class="toast-container" aria-label="알림" role="region"></div>
+  
+  <!-- Scripts -->
+  <script src="/scripts/theme.js"></script>
+  <script src="/scripts/animations.js"></script>
+  <script src="/scripts/accessibility.js"></script>
+  <script src="/scripts/skeleton.js"></script>
+  <script src="/scripts/lotto-ball-3d.js"></script>
+  <script src="/scripts/lotto-data.js"></script>
+  <script src="/scripts/lotto-generator.js"></script>
+  
+  <script>
+    // 페이지 초기화
+    document.addEventListener('DOMContentLoaded', () => {
+      // 모바일 메뉴 토글
+      const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      
+      mobileMenuBtn?.addEventListener('click', () => {
+        const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+        mobileMenuBtn.setAttribute('aria-expanded', !isExpanded);
+        mobileMenu.setAttribute('aria-hidden', isExpanded);
+        
+        // 아이콘 토글
+        const menuIcon = mobileMenuBtn.querySelector('.icon-menu');
+        const closeIcon = mobileMenuBtn.querySelector('.icon-close');
+        menuIcon.style.display = isExpanded ? 'block' : 'none';
+        closeIcon.style.display = isExpanded ? 'none' : 'block';
+      });
+      
+      // 스켈레톤 로딩 데모
+      const loadingDemoBtn = document.getElementById('demo-loading-btn');
+      const loadingDemoContent = document.getElementById('loading-demo-content');
+      
+      loadingDemoBtn?.addEventListener('click', () => {
+        Skeleton.show(loadingDemoContent, 'result', { context: '분석 결과' });
+        
+        // 2초 후 복원
+        setTimeout(() => {
+          Skeleton.hide(loadingDemoContent);
+        }, 2000);
+      });
+      
+      // 3D 볼 초기화
+      const ball3dContainer = document.getElementById('ball-3d-container');
+      if (ball3dContainer && LottoBall3D.init('ball-3d-container')) {
+        LottoBall3D.displayBalls([7, 9, 24, 27, 35, 36]);
+        LottoBall3D.start();
+      }
+      
+      // 3D 볼 새로 생성
+      const generate3dBtn = document.getElementById('generate-3d-btn');
+      generate3dBtn?.addEventListener('click', () => {
+        if (typeof lottoGenerator !== 'undefined' && lottoGenerator.ready) {
+          const result = lottoGenerator.generate('balanced');
+          
+          if (LottoBall3D.isInitialized) {
+            LottoBall3D.displayBalls(result.numbers);
+          }
+          
+          // 접근성 알림
+          A11y.announceResults(result.numbers, result.score);
+          
+          // 토스트 알림
+          AnimationManager.showToast(`새 번호가 생성되었습니다. 점수: ${result.score}점`, 'success');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

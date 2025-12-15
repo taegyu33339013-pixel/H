@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이용약관 | 로또인사이트</title>
+  <meta name="description" content="로또인사이트 이용약관 - 서비스 이용에 관한 권리, 의무, 책임사항을 안내합니다.">
+  <meta name="robots" content="noindex, follow">
+  
+  <meta name="theme-color" content="#0B132B">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-dark: #0B132B;
+      --secondary: #1C2541;
+      --accent-cyan: #00E0A4;
+      --accent-gold: #FFD75F;
+      --text-primary: #ffffff;
+      --text-secondary: #a8b5c8;
+      --text-muted: #6b7a8f;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Pretendard', -apple-system, sans-serif;
+      background: var(--primary-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: rgba(11, 19, 43, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #00E0A4 0%, #00C896 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 100px 24px 80px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .page-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .page-date {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .content-section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(0, 224, 164, 0.2);
+    }
+
+    .section-content {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .section-content p {
+      margin-bottom: 12px;
+    }
+
+    .section-content ul, .section-content ol {
+      margin: 12px 0;
+      padding-left: 24px;
+    }
+
+    .section-content li {
+      margin-bottom: 8px;
+    }
+
+    .section-content strong {
+      color: var(--text-primary);
+    }
+
+    .warning-box {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 16px 0;
+    }
+
+    .warning-box p {
+      color: #ef4444;
+      margin-bottom: 8px;
+    }
+
+    .warning-box ul {
+      color: var(--text-secondary);
+    }
+
+    .highlight-box {
+      background: rgba(0, 224, 164, 0.05);
+      border: 1px solid rgba(0, 224, 164, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 16px 0;
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+
+    .info-table th, .info-table td {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px;
+      text-align: left;
+    }
+
+    .info-table th {
+      background: rgba(0, 224, 164, 0.1);
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .info-table td {
+      color: var(--text-secondary);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent-cyan);
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 40px;
+      padding: 12px 24px;
+      background: rgba(0, 224, 164, 0.1);
+      border-radius: 8px;
+      transition: background 0.3s ease;
+    }
+
+    .back-link:hover {
+      background: rgba(0, 224, 164, 0.15);
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 80px 16px 60px;
+      }
+
+      .page-title {
+        font-size: 1.5rem;
+      }
+
+      .info-table {
+        font-size: 0.8rem;
+      }
+
+      .info-table th, .info-table td {
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B132B" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+      </div>
+      로또인사이트
+    </a>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">이용약관</h1>
+      <p class="page-date">시행일: 2025년 1월 1일 | 최종 수정: 2025년 1월 1일</p>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">제1조 (목적)</h2>
+      <div class="section-content">
+        <p>이 약관은 로또인사이트(이하 "회사")가 제공하는 AI 기반 로또 번호 분석 서비스(이하 "서비스")의 이용조건 및 절차, 회사와 회원 간의 권리, 의무, 책임사항 등을 규정함을 목적으로 합니다.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">제2조 (용어의 정의)</h2>
+      <div class="section-content">
+        <ol>
+          <li><strong>"서비스"</strong>란 회사가 제공하는 AI 기반 로또 번호 통계 분석 및 조합 제공 서비스를 말합니다.</li>
+          <li><strong>"회원"</strong>이란 본 약관에 동의하고 회사와 서비스 이용계약을 체결한 자를 말합니다.</li>
+          <li><strong>"크레딧"</strong>이란 유료 분석 서비스를 이용하기 위해 결제하는 가상의 이용권을 말합니다.</li>
+          <li><strong>"분석 결과"</strong>란 AI가 통계적 패턴을 기반으로 생성한 번호 조합과 리포트를 말합니다.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">제3조 (서비스의 성격 및 면책)</h2>
+      <div class="section-content">
+        <div class="warning-box">
+          <p><strong>⚠️ 중요: 반드시 읽어주세요</strong></p>
+          <ul>
+            <li>본 서비스는 <strong>통계적 패턴 분석을 기반으로 한 참고 정보</strong>를 제공하며, 당첨을 보장하거나 예측하지 않습니다.</li>
+            <li><strong>모든 로또 조합의 당첨 확률은 동일</strong>합니다 (1/8,145,060).</li>
+            <li>서비스 이용으로 인한 금전적 손실에 대해 회사는 책임지지 않습니다.</li>
+            <li>로또 구매는 <strong>동행복권 공식 판매처</strong>에서만 가능합니다.</li>
+            <li>본 서비스는 <strong>19세 이상</strong>만 이용할 수 있습니다.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">제4조 (이용계약의 체결)</h2>
+      <div class="section-content">
+        <ol>
+          <li>이용계약은 회원이 되고자 하는 자(이하 "가입신청자")가 약관의 내용에 동의한 후 회원가입 신청을 하고, 회사가 이를 승낙함으로써 체결됩니다.</li>
+          <li>회사는 카카오 계정을 통한 간편 로그인 방식으로 회원가입을 제공합니다.</li>
+          <li>회사는 다음 각 호에 해당하는 신청에 대하여는 승낙을 거부할 수 있습니다.
+            <ul>
+              <li>타인의 명의를 이용한 경우</li>
+              <li>허위의 정보를 기재한 경우</li>
+              <li>19세 미만인 경우</li>
+              <li>기타 회사가 정한 이용신청 요건에 미달하는 경우</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">제5조 (서비스의 제공)</h2>
+      <div class="section-content">
+        <p>회사는 회원에게 다음과 같은 서비스를 제공합니다.</p>
+        <ol>
+          <li><strong>무료 서비스:</strong> 회원가입 시 무료 분석 1회 제공</li>
+          <li><strong>유료 서비스:</strong> 크레딧 결제 후 추가 분석 이용
+            <ul>
+              <li>분석 1회당 200원</li>
+              <li>충전 시 보너스 크레딧 제공 (조건에 따라 상이)</li>
+            </ul>
+          </li>
+          <li><strong>분석 결과:</strong> 통계 기반 번호 조합 6개, 균형 점수, AI 분석 리포트</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">제6조 (결제 및 환불)</h2>
+      <div class="section-content">
+        <table class="info-table">
+          <tr>
+            <th>구분</th>
+            <th>내용</th>
+          </tr>
+          <tr>
+            <td>결제 수단</td>
+            <td>카카오페이, 신용카드, 휴대폰 결제 등</td>
+          </tr>
+          <tr>
+            <td>최소 결제 단위</td>
+            <td>1,000원 (5회 분석)</td>
+          </tr>
+          <tr>
+            <td>환불 조건</td>
+            <td>미사용 크레딧에 한해 결제일로부터 7일 이내</td>
+          </tr>
+          <tr>
+            <td>환불 불가</td>
+            <td>사용한 크레딧, 무료 제공 크레딧, 보너스 크레딧</td>
+          </tr>
+        </table>
+        <p>환불 요청은 고객센터(support@lottoinsight.ai)로 문의해주세요.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">제7조 (회원의 의무)</h2>
+      <div class="section-content">
+        <p>회원은 다음 행위를 하여서는 안 됩니다.</p>
+        <ol>
+          <li>타인의 정보를 도용하는 행위</li>
+          <li>회사의 서비스 운영을 방해하는 행위</li>
+          <li>서비스를 이용하여 얻은 정보를 상업적으로 이용하거나 재판매하는 행위</li>
+          <li>회사의 지식재산권을 침해하는 행위</li>
+          <li>기타 관련 법령에 위배되는 행위</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">제8조 (서비스 이용 제한)</h2>
+      <div class="section-content">
+        <p>회사는 회원이 제7조의 의무를 위반하거나 서비스의 정상적인 운영을 방해한 경우, 사전 통지 후 서비스 이용을 제한하거나 이용계약을 해지할 수 있습니다.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">제9조 (면책조항)</h2>
+      <div class="section-content">
+        <ol>
+          <li>회사는 천재지변, 전쟁, 기간통신사업자의 서비스 중단 등 불가항력적인 사유로 서비스를 제공할 수 없는 경우 책임이 면제됩니다.</li>
+          <li>회사는 회원의 귀책사유로 인한 서비스 이용 장애에 대해 책임지지 않습니다.</li>
+          <li><strong>회사는 서비스를 통해 제공된 분석 결과의 정확성, 신뢰성을 보증하지 않으며, 분석 결과를 이용한 로또 구매로 인해 발생한 손해에 대해 책임지지 않습니다.</strong></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">제10조 (분쟁 해결)</h2>
+      <div class="section-content">
+        <ol>
+          <li>회사와 회원 간에 발생한 분쟁에 관한 소송은 대한민국 법원을 관할 법원으로 합니다.</li>
+          <li>회사와 회원 간에 제기된 소송에는 대한민국 법을 적용합니다.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">제11조 (약관의 변경)</h2>
+      <div class="section-content">
+        <p>회사가 약관을 변경할 경우에는 적용일자 및 변경사유를 명시하여 현행 약관과 함께 서비스 초기화면에 그 적용일자 7일 전부터 적용일자 전일까지 공지합니다. 다만, 회원에게 불리한 약관 변경의 경우에는 30일 전부터 공지합니다.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="highlight-box">
+        <p><strong>📞 고객센터</strong></p>
+        <p>이메일: support@lottoinsight.ai</p>
+        <p>운영시간: 평일 10:00 - 18:00 (주말/공휴일 휴무)</p>
+      </div>
+    </div>
+
+    <a href="index.html" class="back-link">← 메인으로 돌아가기</a>
+  </div>
+</body>
+</html>
+

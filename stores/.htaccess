@@ -1,0 +1,9 @@
+# /stores/.htaccess - 당첨점 URL Rewriting
+
+RewriteEngine On
+
+# 지역별: /stores/서울/강남구/
+RewriteRule ^([^/]+)/([^/]+)/?$ index.php?region1=$1&region2=$2 [L,QSA]
+
+# 시도별: /stores/서울/
+RewriteRule ^([^/]+)/?$ index.php?region1=$1 [L,QSA]
