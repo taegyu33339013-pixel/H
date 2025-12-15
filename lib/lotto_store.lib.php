@@ -443,6 +443,10 @@ function li_save_store($store) {
     $region2 = sql_real_escape_string($store['region2'] ?? '');
     $region3 = sql_real_escape_string($store['region3'] ?? '');
     $phone = sql_real_escape_string($store['phone'] ?? '');
+    $opening_hours = sql_real_escape_string($store['opening_hours'] ?? '');
+    $store_image = sql_real_escape_string($store['store_image'] ?? '');
+    $latitude = isset($store['latitude']) ? (float)$store['latitude'] : null;
+    $longitude = isset($store['longitude']) ? (float)$store['longitude'] : null;
     
     // 기존 판매점 확인 (이름 + 주소로 중복 체크)
     $row = sql_fetch("SELECT store_id, wins_1st, wins_2nd FROM g5_lotto_store 
@@ -450,38 +454,100 @@ function li_save_store($store) {
     
     if ($row['store_id']) {
         // 기존 데이터 업데이트 (지역 정보 갱신)
-        $update_sql = "UPDATE g5_lotto_store SET 
-                   region1 = '{$region1}', 
-                   region2 = '{$region2}', 
-                   phone = '{$phone}',
-                   updated_at = NOW()";
+        $update_fields = [
+            "region1 = '{$region1}'",
+            "region2 = '{$region2}'",
+            "phone = '{$phone}'",
+            "updated_at = NOW()"
+        ];
         
         // region3 필드가 존재하면 업데이트
         $check_region3 = sql_query("SHOW COLUMNS FROM g5_lotto_store LIKE 'region3'", false);
         if ($check_region3 && sql_num_rows($check_region3) > 0) {
-            $update_sql .= ", region3 = '{$region3}'";
+            $update_fields[] = "region3 = '{$region3}'";
         }
         
-        $update_sql .= " WHERE store_id = {$row['store_id']}";
+        // 추가 필드들 확인 및 업데이트 (기존 값이 없을 때만 업데이트)
+        $additional_fields = [
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'opening_hours' => $opening_hours,
+            'store_image' => $store_image
+        ];
+        
+        foreach ($additional_fields as $field => $value) {
+            $check = sql_query("SHOW COLUMNS FROM g5_lotto_store LIKE '{$field}'", false);
+            if ($check && sql_num_rows($check) > 0) {
+                // 기존 값 확인 (NULL이거나 빈 값일 때만 업데이트)
+                $existing_value = sql_fetch("SELECT {$field} FROM g5_lotto_store WHERE store_id = {$row['store_id']}");
+                $existing = $existing_value[$field] ?? null;
+                
+                if ($field === 'latitude' && $latitude !== null && ($existing === null || $existing == 0)) {
+                    $update_fields[] = "latitude = {$latitude}";
+                } elseif ($field === 'longitude' && $longitude !== null && ($existing === null || $existing == 0)) {
+                    $update_fields[] = "longitude = {$longitude}";
+                } elseif ($field === 'opening_hours' && !empty($opening_hours) && empty($existing)) {
+                    $update_fields[] = "opening_hours = '{$opening_hours}'";
+                } elseif ($field === 'store_image' && !empty($store_image) && empty($existing)) {
+                    $update_fields[] = "store_image = '{$store_image}'";
+                }
+            }
+        }
+        
+        $update_sql = "UPDATE g5_lotto_store SET " . implode(', ', $update_fields) . " WHERE store_id = {$row['store_id']}";
         sql_query($update_sql);
         
         return (int)$row['store_id'];
     }
     
     // 새로 등록
-    // region3 필드 존재 여부 확인
+    // 필드 존재 여부 확인
     $check_region3 = sql_query("SHOW COLUMNS FROM g5_lotto_store LIKE 'region3'", false);
     $has_region3 = ($check_region3 && sql_num_rows($check_region3) > 0);
     
+    $check_opening_hours = sql_query("SHOW COLUMNS FROM g5_lotto_store LIKE 'opening_hours'", false);
+    $has_opening_hours = ($check_opening_hours && sql_num_rows($check_opening_hours) > 0);
+    
+    $check_store_image = sql_query("SHOW COLUMNS FROM g5_lotto_store LIKE 'store_image'", false);
+    $has_store_image = ($check_store_image && sql_num_rows($check_store_image) > 0);
+    
+    $check_latitude = sql_query("SHOW COLUMNS FROM g5_lotto_store LIKE 'latitude'", false);
+    $has_latitude = ($check_latitude && sql_num_rows($check_latitude) > 0);
+    
+    // INSERT 필드 및 값 구성
+    $insert_fields = ['store_name', 'address', 'region1', 'region2', 'phone', 'wins_1st', 'wins_2nd', 'created_at', 'updated_at'];
+    $insert_values = ["'{$name}'", "'{$address}'", "'{$region1}'", "'{$region2}'", "'{$phone}'", '0', '0', 'NOW()', 'NOW()'];
+    
     if ($has_region3) {
-        sql_query("INSERT INTO g5_lotto_store 
-                   (store_name, address, region1, region2, region3, phone, wins_1st, wins_2nd, created_at, updated_at) 
-                   VALUES ('{$name}', '{$address}', '{$region1}', '{$region2}', '{$region3}', '{$phone}', 0, 0, NOW(), NOW())");
-    } else {
-    sql_query("INSERT INTO g5_lotto_store 
-               (store_name, address, region1, region2, phone, wins_1st, wins_2nd, created_at, updated_at) 
-               VALUES ('{$name}', '{$address}', '{$region1}', '{$region2}', '{$phone}', 0, 0, NOW(), NOW())");
+        $insert_fields[] = 'region3';
+        $insert_values[] = "'{$region3}'";
     }
+    
+    if ($has_opening_hours && !empty($opening_hours)) {
+        $insert_fields[] = 'opening_hours';
+        $insert_values[] = "'{$opening_hours}'";
+    }
+    
+    if ($has_store_image && !empty($store_image)) {
+        $insert_fields[] = 'store_image';
+        $insert_values[] = "'{$store_image}'";
+    }
+    
+    $check_longitude = sql_query("SHOW COLUMNS FROM g5_lotto_store LIKE 'longitude'", false);
+    $has_longitude = ($check_longitude && sql_num_rows($check_longitude) > 0);
+    
+    if ($has_latitude && $latitude !== null) {
+        $insert_fields[] = 'latitude';
+        $insert_values[] = $latitude;
+    }
+    
+    if ($has_longitude && $longitude !== null) {
+        $insert_fields[] = 'longitude';
+        $insert_values[] = $longitude;
+    }
+    
+    $insert_sql = "INSERT INTO g5_lotto_store (" . implode(', ', $insert_fields) . ") VALUES (" . implode(', ', $insert_values) . ")";
+    sql_query($insert_sql);
     
     return sql_insert_id();
 }

@@ -287,6 +287,8 @@ function li_kakao_enrich_store_data($store) {
         'place_url' => null,
         'category_name' => null,
         'road_address' => null,
+        'opening_hours' => null,
+        'store_image' => null,
     ];
     
     $store_name = $store['store_name'] ?? '';
@@ -318,9 +320,11 @@ function li_kakao_enrich_store_data($store) {
             $result['phone'] = $place_info['phone'];
         }
         
-        // 플레이스 URL
+        // 플레이스 URL (이미지 추출 가능)
         if (!empty($place_info['place_url'])) {
             $result['place_url'] = $place_info['place_url'];
+            // 카카오 플레이스 URL에서 이미지 추출 가능 (향후 구현)
+            // $result['store_image'] = extract_image_from_place_url($place_info['place_url']);
         }
         
         // 카테고리
@@ -328,6 +332,10 @@ function li_kakao_enrich_store_data($store) {
             $result['category_name'] = $place_info['category_name'];
         }
     }
+    
+    // 주의: 카카오 API는 직접 영업시간을 제공하지 않으므로
+    // 플레이스 URL을 통해 별도 크롤링이 필요할 수 있습니다.
+    // $result['opening_hours'] = extract_opening_hours_from_place_url($place_info['place_url']);
     
     return $result;
 }
@@ -420,6 +428,24 @@ function li_kakao_update_store($store_id, $data) {
         $check_region3 = sql_query("SHOW COLUMNS FROM g5_lotto_store LIKE 'region3'", false);
         if ($check_region3 && sql_num_rows($check_region3) > 0) {
             $updates[] = "region3 = '{$region3}'";
+        }
+    }
+    
+    // opening_hours 업데이트
+    if (isset($data['opening_hours']) && !empty($data['opening_hours'])) {
+        $opening_hours = sql_real_escape_string($data['opening_hours']);
+        $check = sql_query("SHOW COLUMNS FROM g5_lotto_store LIKE 'opening_hours'", false);
+        if ($check && sql_num_rows($check) > 0) {
+            $updates[] = "opening_hours = '{$opening_hours}'";
+        }
+    }
+    
+    // store_image 업데이트
+    if (isset($data['store_image']) && !empty($data['store_image'])) {
+        $store_image = sql_real_escape_string($data['store_image']);
+        $check = sql_query("SHOW COLUMNS FROM g5_lotto_store LIKE 'store_image'", false);
+        if ($check && sql_num_rows($check) > 0) {
+            $updates[] = "store_image = '{$store_image}'";
         }
     }
     

@@ -141,7 +141,7 @@ $canonical_url .= urlencode($store_name_slug) . "-" . $store['store_id'];
   <meta property="og:description" content="<?= htmlspecialchars($page_desc) ?>">
   <meta property="og:locale" content="ko_KR">
   <meta property="og:site_name" content="오늘로또">
-  <meta property="og:image" content="https://lottoinsight.ai/images/og-store.jpg">
+  <meta property="og:image" content="<?= !empty($store['store_image']) ? htmlspecialchars($store['store_image']) : 'https://lottoinsight.ai/images/og-store.jpg' ?>">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="<?= $store_name ?> 로또 판매점">
@@ -152,7 +152,7 @@ $canonical_url .= urlencode($store_name_slug) . "-" . $store['store_id'];
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="<?= $page_title ?>">
   <meta name="twitter:description" content="<?= htmlspecialchars($page_desc) ?>">
-  <meta name="twitter:image" content="https://lottoinsight.ai/images/og-store.jpg">
+  <meta name="twitter:image" content="<?= !empty($store['store_image']) ? htmlspecialchars($store['store_image']) : 'https://lottoinsight.ai/images/og-store.jpg' ?>">
   <meta name="twitter:site" content="@lottoinsight">
   <meta name="twitter:creator" content="@lottoinsight">
   
@@ -275,7 +275,11 @@ $canonical_url .= urlencode($store_name_slug) . "-" . $store['store_id'];
         "@id": "<?= $canonical_url ?>#store",
         "name": "<?= $store_name ?>",
         "description": "로또 판매점 - 1등 <?= $wins_1st ?>회, 2등 <?= $wins_2nd ?>회 당첨. <?= htmlspecialchars($store_region1) ?> <?= htmlspecialchars($store_region2) ?> 지역 로또 명당 판매점.",
+        <?php if (!empty($store['store_image'])): ?>
+        "image": "<?= htmlspecialchars($store['store_image']) ?>",
+        <?php else: ?>
         "image": "https://lottoinsight.ai/images/store-default.jpg",
+        <?php endif; ?>
     "address": {
       "@type": "PostalAddress",
           "streetAddress": "<?= $store_address ?>",
@@ -291,10 +295,14 @@ $canonical_url .= urlencode($store_name_slug) . "-" . $store['store_id'];
           "longitude": "<?= (float)$store['longitude'] ?>"
         }
         <?php endif; ?>
+        <?php 
+        $review_rating = !empty($store['review_rating']) ? (float)$store['review_rating'] : min(5, 3 + ($wins_1st * 0.3));
+        $review_count = !empty($store['review_count']) ? (int)$store['review_count'] : ($wins_1st + $wins_2nd);
+        ?>
         ,"aggregateRating": {
       "@type": "AggregateRating",
-          "ratingValue": "<?= min(5, 3 + ($wins_1st * 0.3)) ?>",
-          "reviewCount": "<?= $wins_1st + $wins_2nd ?>",
+          "ratingValue": "<?= $review_rating ?>",
+          "reviewCount": "<?= $review_count ?>",
           "bestRating": "5",
           "worstRating": "1"
         },
@@ -302,12 +310,31 @@ $canonical_url .= urlencode($store_name_slug) . "-" . $store['store_id'];
         "telephone": "<?= htmlspecialchars($store['phone'] ?? '') ?>",
         "url": "<?= $canonical_url ?>",
         "sameAs": [],
+        <?php if (!empty($store['opening_hours'])): 
+          // opening_hours 형식: "09:00-22:00" 또는 "Mo-Su 09:00-22:00"
+          $hours = $store['opening_hours'];
+          if (preg_match('/(\d{2}:\d{2})-(\d{2}:\d{2})/', $hours, $time_match)) {
+            $opens = $time_match[1];
+            $closes = $time_match[2];
+          } else {
+            $opens = "09:00";
+            $closes = "22:00";
+          }
+        ?>
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          "opens": "<?= $opens ?>",
+          "closes": "<?= $closes ?>"
+        },
+        <?php else: ?>
         "openingHoursSpecification": {
           "@type": "OpeningHoursSpecification",
           "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
           "opens": "09:00",
           "closes": "22:00"
         },
+        <?php endif; ?>
         "paymentAccepted": "현금, 카드",
         "currenciesAccepted": "KRW"
       }
