@@ -1681,7 +1681,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 
     @keyframes ballAppear {
       0% {
-        opacity: 0;
+      opacity: 0;
         transform: scale(0) rotateY(180deg);
       }
       60% {
@@ -3031,7 +3031,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
           <div class="credit-total">
             <span class="credit-label">보유 크레딧</span>
             <span class="credit-value" id="navCredit">1회</span>
-          </div>
+      </div>
           <div class="credit-breakdown" id="creditBreakdown">
             <span class="credit-free">무료 1회</span>
           </div>
@@ -3309,7 +3309,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
   <div class="loading-modal" id="loadingModal">
     <div class="loading-container">
       <div class="loading-header">
-        <div class="loading-spinner"></div>
+      <div class="loading-spinner"></div>
         <h3 style="color: var(--accent-primary); margin: 0; font-size: var(--font-size-xl); font-weight: 700;">AI 분석 중</h3>
       </div>
       
@@ -4468,7 +4468,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 				<div class="score-fill" style="width: ${r.score}%; background: ${r.score >= 85 ? '#00e0a4' : r.score >= 70 ? '#00b4d8' : '#ffd700'}"></div>
 				<div class="score-value">${r.score}점</div>
 			  </div>
-			</div>
+			  </div>
 
 			<div class="card-insights">
 			  <div class="insight-item">
@@ -4477,7 +4477,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 				  <div class="insight-label">홀짝 비율</div>
 				  <div class="insight-value">${r.numbers.filter(n => n % 2 === 1).length}:${r.numbers.filter(n => n % 2 === 0).length}</div>
 				</div>
-			  </div>
+				</div>
 			  <div class="insight-item">
 				<span class="insight-icon">📊</span>
 				<div class="insight-content">

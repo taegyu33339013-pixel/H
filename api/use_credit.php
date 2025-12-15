@@ -62,8 +62,8 @@ if (!$use['success']) {
 }
 
 // 성공 응답
-echo json_encode([
-    'success' => true,
+    echo json_encode([
+        'success' => true,
     'message' => '크레딧 사용 완료',
     'used_as' => $use['used_as'], // 'free' or 'paid'
     'free_uses' => $use['free_uses'],

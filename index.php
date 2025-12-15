@@ -2355,15 +2355,15 @@ $total_numbers_fmt = number_format($total_numbers); // ✅ 7,206 형태
       letter-spacing: 0.05em;
     }
 
-      .archive-row {
-        display: grid;
-        grid-template-columns: 100px 1fr 1fr 100px;
-        gap: 16px;
-        padding: 20px 32px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        align-items: center;
-        transition: background 0.3s ease;
-      }
+    .archive-row {
+      display: grid;
+      grid-template-columns: 100px 1fr 1fr 100px;
+      gap: 16px;
+      padding: 20px 32px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      align-items: center;
+      transition: background 0.3s ease;
+    }
 
       /* 모바일: Archive 테이블을 카드형으로 전환 */
       @media (max-width: 768px) {

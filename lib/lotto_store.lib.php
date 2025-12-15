@@ -212,6 +212,7 @@ function li_parse_store_list($html, $sido) {
             $region = li_extract_region_from_address($store['address']);
             $store['region1'] = $region['region1'] ?: $sido;
             $store['region2'] = $region['region2'];
+            $store['region3'] = $region['region3'] ?? '';
             
             $stores[] = $store;
         }
@@ -221,11 +222,12 @@ function li_parse_store_list($html, $sido) {
 }
 
 /**
- * 주소에서 지역 정보 추출
+ * 주소에서 지역 정보 추출 (region1, region2, region3)
  */
 function li_extract_region_from_address($address) {
     $region1 = '';
     $region2 = '';
+    $region3 = '';
     
     // 시/도 추출
     $sido_patterns = [
@@ -260,7 +262,12 @@ function li_extract_region_from_address($address) {
         $region2 = $matches[1];
     }
     
-    return ['region1' => $region1, 'region2' => $region2];
+    // 읍/면/동 추출 (region3)
+    if (preg_match('/([가-힣]+(?:동|읍|면|리))/u', $address, $dong_matches)) {
+        $region3 = $dong_matches[1];
+    }
+    
+    return ['region1' => $region1, 'region2' => $region2, 'region3' => $region3];
 }
 
 /**
@@ -340,6 +347,7 @@ function li_parse_winning_stores($html, $rank) {
             $region = li_extract_region_from_address($store['address']);
             $store['region1'] = $region['region1'];
             $store['region2'] = $region['region2'];
+            $store['region3'] = $region['region3'] ?? '';
             
             $store['rank'] = $rank;
             
@@ -433,6 +441,7 @@ function li_save_store($store) {
     $address = sql_real_escape_string($store['address']);
     $region1 = sql_real_escape_string($store['region1'] ?? '');
     $region2 = sql_real_escape_string($store['region2'] ?? '');
+    $region3 = sql_real_escape_string($store['region3'] ?? '');
     $phone = sql_real_escape_string($store['phone'] ?? '');
     
     // 기존 판매점 확인 (이름 + 주소로 중복 체크)
@@ -441,19 +450,38 @@ function li_save_store($store) {
     
     if ($row['store_id']) {
         // 기존 데이터 업데이트 (지역 정보 갱신)
-        sql_query("UPDATE g5_lotto_store SET 
+        $update_sql = "UPDATE g5_lotto_store SET 
                    region1 = '{$region1}', 
                    region2 = '{$region2}', 
                    phone = '{$phone}',
-                   updated_at = NOW() 
-                   WHERE store_id = {$row['store_id']}");
+                   updated_at = NOW()";
+        
+        // region3 필드가 존재하면 업데이트
+        $check_region3 = sql_query("SHOW COLUMNS FROM g5_lotto_store LIKE 'region3'", false);
+        if ($check_region3 && sql_num_rows($check_region3) > 0) {
+            $update_sql .= ", region3 = '{$region3}'";
+        }
+        
+        $update_sql .= " WHERE store_id = {$row['store_id']}";
+        sql_query($update_sql);
+        
         return (int)$row['store_id'];
     }
     
     // 새로 등록
-    sql_query("INSERT INTO g5_lotto_store 
-               (store_name, address, region1, region2, phone, wins_1st, wins_2nd, created_at, updated_at) 
-               VALUES ('{$name}', '{$address}', '{$region1}', '{$region2}', '{$phone}', 0, 0, NOW(), NOW())");
+    // region3 필드 존재 여부 확인
+    $check_region3 = sql_query("SHOW COLUMNS FROM g5_lotto_store LIKE 'region3'", false);
+    $has_region3 = ($check_region3 && sql_num_rows($check_region3) > 0);
+    
+    if ($has_region3) {
+        sql_query("INSERT INTO g5_lotto_store 
+                   (store_name, address, region1, region2, region3, phone, wins_1st, wins_2nd, created_at, updated_at) 
+                   VALUES ('{$name}', '{$address}', '{$region1}', '{$region2}', '{$region3}', '{$phone}', 0, 0, NOW(), NOW())");
+    } else {
+        sql_query("INSERT INTO g5_lotto_store 
+                   (store_name, address, region1, region2, phone, wins_1st, wins_2nd, created_at, updated_at) 
+                   VALUES ('{$name}', '{$address}', '{$region1}', '{$region2}', '{$phone}', 0, 0, NOW(), NOW())");
+    }
     
     return sql_insert_id();
 }

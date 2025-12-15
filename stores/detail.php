@@ -20,19 +20,37 @@ include_once(G5_PATH . '/lib/lotto_store.lib.php');
 // 파라미터 파싱
 $store_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
+$region1 = '';
+$region2 = '';
+$region3 = '';
+$store_slug = '';
 
-// URL 경로에서 slug 추출 (/stores/view/{slug})
-$request_uri = $_SERVER['REQUEST_URI'];
-if (preg_match('/\/stores\/view\/([^\/\?]+)/', $request_uri, $matches)) {
+// URL 경로 파싱 - 로또로직스 스타일: /stores/서울특별시/강남구/역삼동/판매점명-고유ID
+$request_uri = urldecode($_SERVER['REQUEST_URI']);
+
+// 지역 계층 구조 URL 패턴
+if (preg_match('/\/stores\/([^\/]+)\/([^\/]+)\/([^\/]+)\/([^\/]+)/', $request_uri, $matches)) {
+    // 4단계: 시도/시군구/읍면동/판매점명-ID
+    $region1 = trim($matches[1]);
+    $region2 = trim($matches[2]);
+    $region3 = trim($matches[3]);
+    $store_slug = trim($matches[4]);
+    
+    // 판매점명-ID에서 ID 추출
+    if (preg_match('/-(\d+)$/', $store_slug, $id_match)) {
+        $store_id = (int)$id_match[1];
+    }
+} elseif (preg_match('/\/stores\/view\/([^\/\?]+)/', $request_uri, $matches)) {
+    // 기존 형식 지원 (하위 호환)
     $slug = urldecode($matches[1]);
 }
 
 // 판매점 조회
 $store = null;
 if ($store_id > 0) {
-    $store = li_get_store($store_id);
+    $store = li_get_store_by_id($store_id);
 } elseif ($slug) {
-    $store = li_get_store($slug);
+    $store = li_get_store_by_name($slug);
 }
 
 if (!$store) {
@@ -41,8 +59,24 @@ if (!$store) {
     exit;
 }
 
+// 지역 정보 설정 (DB에서 가져오거나 URL에서 추출)
+$store_region1 = $store['region1'] ?? $region1 ?: '';
+$store_region2 = $store['region2'] ?? $region2 ?: '';
+$store_region3 = $region3 ?: '';
+
+// 주소에서 읍면동 추출 (없는 경우)
+if (empty($store_region3) && !empty($store['address'])) {
+    if (preg_match('/([가-힣]+(?:동|읍|면|리))/u', $store['address'], $dong_match)) {
+        $store_region3 = $dong_match[1];
+    }
+}
+
+// 판매점명에서 slug 생성
+$store_name_slug = preg_replace('/[^가-힣a-zA-Z0-9\s-]/u', '', $store['store_name'] ?? $store['name'] ?? '');
+$store_name_slug = preg_replace('/\s+/', '-', trim($store_name_slug));
+
 // 당첨 이력 조회
-$wins = li_get_store_wins($store['store_id'], 50);
+$wins = li_get_store_win_history($store['store_id'], 50);
 
 // 최신 회차
 $latest = sql_fetch("SELECT MAX(draw_no) AS max_round FROM g5_lotto_draw");
@@ -57,10 +91,33 @@ function get_ball_color($n) {
     return 'green';
 }
 
-// SEO 데이터
-$page_title = htmlspecialchars($store['name']) . " - " . htmlspecialchars($store['region']) . " 로또 판매점";
-$page_desc = htmlspecialchars($store['name']) . " (" . htmlspecialchars($store['address']) . ") - 1등 " . $store['wins_1st'] . "회, 2등 " . $store['wins_2nd'] . "회 당첨. 로또 명당 판매점 상세 정보.";
-$canonical_url = "https://lottoinsight.ai/stores/view/" . urlencode($store['slug']);
+// SEO 데이터 - 로또로직스 스타일
+$store_name = htmlspecialchars($store['store_name'] ?? $store['name'] ?? '');
+$store_address = htmlspecialchars($store['address'] ?? '');
+$wins_1st = (int)($store['wins_1st'] ?? 0);
+$wins_2nd = (int)($store['wins_2nd'] ?? 0);
+
+$region_full = trim(implode(' ', array_filter([$store_region1, $store_region2, $store_region3])));
+$page_title = $store_name . " 로또 판매점";
+// SEO Description 강화 - 더 상세하고 키워드 풍부하게
+$win_desc = [];
+if ($wins_1st > 0) {
+    $win_desc[] = "1등 당첨 {$wins_1st}회";
+    if ($wins_1st >= 3) $win_desc[] = "명당 판매점";
+}
+if ($wins_2nd > 0) {
+    $win_desc[] = "2등 당첨 {$wins_2nd}회";
+}
+$win_text = !empty($win_desc) ? implode(", ", $win_desc) : "로또 판매점";
+
+$page_desc = "로또 판매점 " . $store_name . " (" . $store_region1 . " " . $store_region2 . ($store_region3 ? " " . $store_region3 : "") . " " . $store_address . ") 상세정보. " . $win_text . ". 동행복권 공식 판매점, 로또 구매 가능, 당첨 이력 확인, 주변 판매점 정보 제공.";
+
+// 로또로직스 스타일 URL 생성
+$canonical_url = "https://lottoinsight.ai/stores/";
+if ($store_region1) $canonical_url .= urlencode($store_region1) . "/";
+if ($store_region2) $canonical_url .= urlencode($store_region2) . "/";
+if ($store_region3) $canonical_url .= urlencode($store_region3) . "/";
+$canonical_url .= urlencode($store_name_slug) . "-" . $store['store_id'];
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -71,37 +128,254 @@ $canonical_url = "https://lottoinsight.ai/stores/view/" . urlencode($store['slug
   <!-- SEO Meta Tags -->
   <title><?= $page_title ?> | 오늘로또</title>
   <meta name="description" content="<?= $page_desc ?>">
-  <meta name="keywords" content="<?= htmlspecialchars($store['name']) ?>, <?= $store['region'] ?> 로또, 로또 판매점, 로또 명당, 1등 당첨점, <?= $store['district'] ?>">
+  <meta name="keywords" content="<?= $store_name ?>, <?= htmlspecialchars($store_region1) ?> 로또, 로또 판매점, 로또 명당, 1등 당첨점, 2등 당첨점, <?= htmlspecialchars($store_region2) ?><?= $store_region3 ? ', ' . htmlspecialchars($store_region3) : '' ?>, 동행복권, 로또 구매처, <?= $wins_1st > 0 ? '명당, ' : '' ?>로또 당첨점, <?= htmlspecialchars($store_region1) ?> 복권방, <?= htmlspecialchars($store_region2) ?> 로또판매점">
   <meta name="robots" content="index, follow">
   
   <!-- Canonical URL -->
   <link rel="canonical" href="<?= $canonical_url ?>">
   
-  <!-- Open Graph -->
+  <!-- Open Graph - 로또로직스 초월 강화 버전 -->
   <meta property="og:type" content="place">
   <meta property="og:url" content="<?= $canonical_url ?>">
   <meta property="og:title" content="<?= $page_title ?>">
-  <meta property="og:description" content="<?= $page_desc ?>">
+  <meta property="og:description" content="<?= htmlspecialchars($page_desc) ?>">
   <meta property="og:locale" content="ko_KR">
+  <meta property="og:site_name" content="오늘로또">
+  <meta property="og:image" content="https://lottoinsight.ai/images/og-store.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="<?= $store_name ?> 로또 판매점">
+  <meta property="place:location:latitude" content="<?= !empty($store['latitude']) ? (float)$store['latitude'] : '' ?>">
+  <meta property="place:location:longitude" content="<?= !empty($store['longitude']) ? (float)$store['longitude'] : '' ?>">
   
-  <!-- Structured Data - Local Business -->
+  <!-- Twitter Card - 강화된 버전 -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<?= $page_title ?>">
+  <meta name="twitter:description" content="<?= htmlspecialchars($page_desc) ?>">
+  <meta name="twitter:image" content="https://lottoinsight.ai/images/og-store.jpg">
+  <meta name="twitter:site" content="@lottoinsight">
+  <meta name="twitter:creator" content="@lottoinsight">
+  
+  <!-- 추가 SEO 메타 태그 - 강화 -->
+  <meta name="author" content="오늘로또">
+  <meta name="publisher" content="오늘로또">
+  <meta name="copyright" content="© <?= date('Y') ?> 오늘로또">
+  <meta name="geo.region" content="KR">
+  <meta name="geo.placename" content="<?= htmlspecialchars($store_region1) ?> <?= htmlspecialchars($store_region2) ?>">
+  <?php if (!empty($store['latitude']) && !empty($store['longitude'])): ?>
+  <meta name="geo.position" content="<?= (float)$store['latitude'] ?>;<?= (float)$store['longitude'] ?>">
+  <meta name="ICBM" content="<?= (float)$store['latitude'] ?>, <?= (float)$store['longitude'] ?>">
+  <?php endif; ?>
+  
+  <!-- Article 메타 태그 (콘텐츠 페이지로 인식) -->
+  <meta property="article:author" content="오늘로또">
+  <meta property="article:published_time" content="<?= date('Y-m-d\TH:i:s+09:00', strtotime($store['created_at'] ?? 'now')) ?>">
+  <meta property="article:modified_time" content="<?= date('Y-m-d\TH:i:s+09:00', strtotime($store['updated_at'] ?? 'now')) ?>">
+  <meta property="article:section" content="로또 판매점">
+  <meta property="article:tag" content="로또, 판매점, <?= htmlspecialchars($store_region1) ?>, <?= htmlspecialchars($store_region2) ?><?= $store_region3 ? ', ' . htmlspecialchars($store_region3) : '' ?>">
+  
+  <!-- 성능 최적화 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://www.google-analytics.com">
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+  <link rel="prefetch" href="/stores/">
+  <?php if ($store_region1): ?>
+  <link rel="prefetch" href="/stores/<?= urlencode($store_region1) ?>/">
+  <?php endif; ?>
+  
+  <!-- Structured Data - 로또로직스 초월 강화 버전 -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Store",
-    "name": "<?= htmlspecialchars($store['name']) ?>",
-    "description": "로또 판매점 - 1등 <?= $store['wins_1st'] ?>회, 2등 <?= $store['wins_2nd'] ?>회 당첨",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://lottoinsight.ai/#organization",
+        "name": "오늘로또",
+        "alternateName": "로또인사이트",
+        "url": "https://lottoinsight.ai",
+        "logo": "https://lottoinsight.ai/images/logo.png",
+        "description": "AI 기반 로또 번호 분석 및 판매점 정보 제공 서비스"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "<?= $canonical_url ?>#breadcrumblist",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "전국",
+            "item": "https://lottoinsight.ai/stores"
+          }
+          <?php 
+          $position = 2;
+          if ($store_region1): 
+          ?>
+          ,{
+            "@type": "ListItem",
+            "position": <?= $position++ ?>,
+            "name": "<?= htmlspecialchars($store_region1) ?>",
+            "item": "https://lottoinsight.ai/stores/<?= urlencode($store_region1) ?>"
+          }
+          <?php endif; ?>
+          <?php if ($store_region2): ?>
+          ,{
+            "@type": "ListItem",
+            "position": <?= $position++ ?>,
+            "name": "<?= htmlspecialchars($store_region2) ?>",
+            "item": "https://lottoinsight.ai/stores/<?= urlencode($store_region1) ?>/<?= urlencode($store_region2) ?>"
+          }
+          <?php endif; ?>
+          <?php if ($store_region3): ?>
+          ,{
+            "@type": "ListItem",
+            "position": <?= $position++ ?>,
+            "name": "<?= htmlspecialchars($store_region3) ?>",
+            "item": "https://lottoinsight.ai/stores/<?= urlencode($store_region1) ?>/<?= urlencode($store_region2) ?>/<?= urlencode($store_region3) ?>"
+          }
+          <?php endif; ?>
+          ,{
+            "@type": "ListItem",
+            "position": <?= $position++ ?>,
+            "name": "<?= $store_name ?>"
+          }
+        ]
+      },
+      {
+        "@type": "WebPage",
+        "@id": "<?= $canonical_url ?>#webpage",
+        "url": "<?= $canonical_url ?>",
+        "name": "<?= $page_title ?>",
+        "headline": "<?= $page_title ?>",
+        "description": "<?= htmlspecialchars($page_desc) ?>",
+        "isPartOf": {
+          "@id": "https://lottoinsight.ai/#website"
+        },
+        "breadcrumb": {
+          "@id": "<?= $canonical_url ?>#breadcrumblist"
+        },
+        "datePublished": "<?= date('Y-m-d\TH:i:s+09:00', strtotime($store['created_at'] ?? 'now')) ?>",
+        "dateModified": "<?= date('Y-m-d\TH:i:s+09:00', strtotime($store['updated_at'] ?? 'now')) ?>",
+        "inLanguage": "ko-KR",
+        "publisher": {
+          "@id": "https://lottoinsight.ai/#organization"
+        },
+        "mainEntity": {
+          "@id": "<?= $canonical_url ?>#store"
+        },
+        "about": {
+          "@type": "Thing",
+          "name": "로또 판매점",
+          "description": "<?= htmlspecialchars($store_region1) ?> <?= htmlspecialchars($store_region2) ?> 지역 로또 판매점"
+        }
+      },
+      {
+        "@type": "LocalBusiness",
+        "@id": "<?= $canonical_url ?>#store",
+        "name": "<?= $store_name ?>",
+        "description": "로또 판매점 - 1등 <?= $wins_1st ?>회, 2등 <?= $wins_2nd ?>회 당첨. <?= htmlspecialchars($store_region1) ?> <?= htmlspecialchars($store_region2) ?> 지역 로또 명당 판매점.",
+        "image": "https://lottoinsight.ai/images/store-default.jpg",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "<?= htmlspecialchars($store['address']) ?>",
-      "addressRegion": "<?= $store['region'] ?>",
-      "addressCountry": "KR"
-    },
-    "aggregateRating": {
+          "streetAddress": "<?= $store_address ?>",
+          "addressRegion": "<?= htmlspecialchars($store_region1) ?>",
+          "addressLocality": "<?= htmlspecialchars($store_region2) ?><?= $store_region3 ? ' ' . htmlspecialchars($store_region3) : '' ?>",
+          "addressCountry": "KR",
+          "postalCode": ""
+        }
+        <?php if (!empty($store['latitude']) && !empty($store['longitude'])): ?>
+        ,"geo": {
+          "@type": "GeoCoordinates",
+          "latitude": "<?= (float)$store['latitude'] ?>",
+          "longitude": "<?= (float)$store['longitude'] ?>"
+        }
+        <?php endif; ?>
+        ,"aggregateRating": {
       "@type": "AggregateRating",
-      "ratingValue": "<?= min(5, 3 + ($store['wins_1st'] * 0.3)) ?>",
-      "reviewCount": "<?= $store['wins_1st'] + $store['wins_2nd'] ?>"
+          "ratingValue": "<?= min(5, 3 + ($wins_1st * 0.3)) ?>",
+          "reviewCount": "<?= $wins_1st + $wins_2nd ?>",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "priceRange": "무료",
+        "telephone": "<?= htmlspecialchars($store['phone'] ?? '') ?>",
+        "url": "<?= $canonical_url ?>",
+        "sameAs": [],
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          "opens": "09:00",
+          "closes": "22:00"
+        },
+        "paymentAccepted": "현금, 카드",
+        "currenciesAccepted": "KRW"
+      }
+      <?php if (!empty($wins)): ?>
+      ,{
+        "@type": "ItemList",
+        "@id": "<?= $canonical_url ?>#winhistory",
+        "name": "<?= $store_name ?> 당첨 이력",
+        "numberOfItems": <?= count($wins) ?>,
+        "itemListElement": [
+          <?php
+          $win_items = [];
+          foreach (array_slice($wins, 0, 10) as $idx => $win) {
+            $draw_no = (int)($win['draw_no'] ?? 0);
+            $rank = (int)($win['rank'] ?? 1);
+            $win_items[] = '{
+              "@type": "ListItem",
+              "position": ' . ($idx + 1) . ',
+              "item": {
+                "@type": "Event",
+                "name": "로또 ' . $draw_no . '회 ' . $rank . '등 당첨",
+                "startDate": "' . date('Y-m-d', strtotime($win['draw_date'] ?? 'now')) . '",
+                "location": {
+                  "@id": "' . $canonical_url . '#store"
+                }
+              }
+            }';
+          }
+          echo implode(",\n          ", $win_items);
+          ?>
+        ]
+      }
+      <?php endif; ?>
+    ]
+  }
+  </script>
+  
+  <!-- FAQPage Schema - 판매점 상세 FAQ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "<?= $store_name ?>에서 로또를 구매할 수 있나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "네, <?= $store_name ?> (<?= $store_address ?>)에서 동행복권 로또를 구매할 수 있습니다. 이 판매점은 1등 <?= $wins_1st ?>회, 2등 <?= $wins_2nd ?>회 당첨 이력이 있습니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "<?= $store_name ?>는 명당 판매점인가요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "<?= $store_name ?>는 1등 <?= $wins_1st ?>회, 2등 <?= $wins_2nd ?>회 당첨 이력이 있습니다. <?= $wins_1st >= 3 ? '명당 판매점으로 분류됩니다.' : ($wins_1st >= 1 ? '1등 당첨 이력이 있는 판매점입니다.' : '2등 당첨 이력이 있는 판매점입니다.') ?> 다만 로또는 확률 게임이므로 특정 판매점에서 당첨 확률이 높다는 것은 통계적 오류입니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "<?= $store_name ?>의 최근 당첨 이력은?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "<?= $store_name ?>의 최근 당첨 이력은 페이지 하단의 '당첨 이력' 섹션에서 확인할 수 있습니다. 총 1등 <?= $wins_1st ?>회, 2등 <?= $wins_2nd ?>회 당첨 기록이 있습니다."
     }
+      }
+    ]
   }
   </script>
 
@@ -520,41 +794,49 @@ $canonical_url = "https://lottoinsight.ai/stores/view/" . urlencode($store['slug
   </nav>
 
   <main class="main">
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb">
-      <a href="/">홈</a>
+    <!-- Breadcrumb - 로또로직스 스타일 완전 구현 -->
+    <nav class="breadcrumb" aria-label="breadcrumb">
+      <a href="/stores/">전국</a>
+      <?php if ($store_region1): ?>
+        <span>›</span>
+        <a href="/stores/<?= urlencode($store_region1) ?>/"><?= htmlspecialchars($store_region1) ?></a>
+      <?php endif; ?>
+      <?php if ($store_region2): ?>
       <span>›</span>
-      <a href="/stores/">당첨점</a>
+        <a href="/stores/<?= urlencode($store_region1) ?>/<?= urlencode($store_region2) ?>/"><?= htmlspecialchars($store_region2) ?></a>
+      <?php endif; ?>
+      <?php if ($store_region3): ?>
       <span>›</span>
-      <a href="/stores/<?= urlencode($store['region']) ?>"><?= htmlspecialchars($store['region']) ?></a>
+        <a href="/stores/<?= urlencode($store_region1) ?>/<?= urlencode($store_region2) ?>/<?= urlencode($store_region3) ?>/"><?= htmlspecialchars($store_region3) ?></a>
+      <?php endif; ?>
       <span>›</span>
-      <span><?= htmlspecialchars($store['name']) ?></span>
+      <span><?= $store_name ?></span>
     </nav>
 
     <!-- Store Header -->
     <section class="store-header">
-      <?php if ($store['wins_1st'] >= 3): ?>
+      <?php if ($wins_1st >= 3): ?>
         <div class="store-badge">🏆 명당 판매점</div>
-      <?php elseif ($store['wins_1st'] >= 1): ?>
+      <?php elseif ($wins_1st >= 1): ?>
         <div class="store-badge">🎯 1등 당첨점</div>
       <?php endif; ?>
       
-      <h1 class="store-name"><?= htmlspecialchars($store['name']) ?></h1>
+      <h1 class="store-name"><?= $store_name ?></h1>
       <p class="store-address">
-        📍 <?= htmlspecialchars($store['address']) ?>
+        📍 <?= htmlspecialchars($store_region1) ?> <?= htmlspecialchars($store_region2) ?> <?= htmlspecialchars($store_region3) ?> <?= $store_address ?>
       </p>
       
       <div class="store-stats">
         <div class="stat-card">
-          <div class="stat-value gold"><?= $store['wins_1st'] ?></div>
+          <div class="stat-value gold"><?= $wins_1st ?></div>
           <div class="stat-label">1등 당첨</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value cyan"><?= $store['wins_2nd'] ?></div>
+          <div class="stat-value cyan"><?= $wins_2nd ?></div>
           <div class="stat-label">2등 당첨</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value purple"><?= $store['wins_1st'] + $store['wins_2nd'] ?></div>
+          <div class="stat-value purple"><?= $wins_1st + $wins_2nd ?></div>
           <div class="stat-label">총 당첨</div>
         </div>
       </div>
@@ -567,15 +849,18 @@ $canonical_url = "https://lottoinsight.ai/stores/view/" . urlencode($store['slug
       <div class="history-list">
         <?php foreach ($wins as $win): ?>
           <?php
-            $balls = [(int)$win['n1'], (int)$win['n2'], (int)$win['n3'], (int)$win['n4'], (int)$win['n5'], (int)$win['n6']];
-            $type_text = $win['win_type'] == 'manual' ? '수동' : ($win['win_type'] == 'semi' ? '반자동' : '자동');
+            $balls = [(int)($win['n1'] ?? 0), (int)($win['n2'] ?? 0), (int)($win['n3'] ?? 0), (int)($win['n4'] ?? 0), (int)($win['n5'] ?? 0), (int)($win['n6'] ?? 0)];
+            $win_type = $win['win_type'] ?? 'auto';
+            $type_text = $win_type == 'manual' ? '수동' : ($win_type == 'semi' ? '반자동' : '자동');
+            $rank = (int)($win['rank'] ?? 1);
+            $draw_no = (int)($win['draw_no'] ?? 0);
           ?>
           <div class="history-item">
             <div class="history-round">
-              <a href="/draw/<?= $win['draw_no'] ?>"><?= $win['draw_no'] ?>회</a>
+              <a href="/draw/<?= $draw_no ?>"><?= $draw_no ?>회</a>
             </div>
-            <div class="history-rank rank-<?= $win['rank'] ?>">
-              <?= $win['rank'] ?>등
+            <div class="history-rank rank-<?= $rank ?>">
+              <?= $rank ?>등
             </div>
             <div class="history-balls">
               <?php foreach ($balls as $n): ?>
@@ -593,11 +878,13 @@ $canonical_url = "https://lottoinsight.ai/stores/view/" . urlencode($store['slug
 
     <!-- Related Links -->
     <section class="related-section">
-      <a href="/stores/<?= urlencode($store['region']) ?>" class="related-card">
+      <?php if ($store_region1): ?>
+      <a href="/stores/<?= urlencode($store_region1) ?><?= $store_region2 ? '/' . urlencode($store_region2) : '' ?>" class="related-card">
         <div class="related-icon">📍</div>
-        <div class="related-title"><?= $store['region'] ?> 다른 당첨점</div>
-        <div class="related-desc"><?= $store['region'] ?> 지역 전체 당첨점 보기</div>
+        <div class="related-title"><?= htmlspecialchars($store_region1) ?><?= $store_region2 ? ' ' . htmlspecialchars($store_region2) : '' ?> 다른 당첨점</div>
+        <div class="related-desc"><?= htmlspecialchars($store_region1) ?><?= $store_region2 ? ' ' . htmlspecialchars($store_region2) : '' ?> 지역 전체 당첨점 보기</div>
       </a>
+      <?php endif; ?>
       <a href="/stores/" class="related-card">
         <div class="related-icon">🏆</div>
         <div class="related-title">전국 명당 순위</div>
