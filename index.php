@@ -2151,6 +2151,441 @@ $total_numbers_fmt = number_format($total_numbers); // ✅ 7,206 형태
       white-space: nowrap;
     }
 
+    /* ===== Famous Ranking Section ===== */
+    .famous-ranking-section {
+      padding: 80px 24px;
+      background: 
+        radial-gradient(ellipse at top, rgba(0, 224, 164, 0.08) 0%, transparent 50%),
+        linear-gradient(180deg, rgba(0, 224, 164, 0.03) 0%, transparent 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .famous-ranking-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(0, 224, 164, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      animation: background-shift 20s ease infinite;
+    }
+
+    @keyframes background-shift {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.1); }
+    }
+
+    .famous-ranking-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .famous-ranking-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .famous-ranking-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 0%, rgba(0, 224, 164, 0.8) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      letter-spacing: -0.02em;
+      position: relative;
+    }
+
+    .famous-ranking-title::before {
+      content: '🏆';
+      font-size: 1.8rem;
+      filter: drop-shadow(0 2px 8px rgba(255, 215, 0, 0.4));
+      animation: medal-float 3s ease-in-out infinite;
+    }
+
+    @keyframes medal-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-5px) rotate(5deg); }
+    }
+
+    .famous-ranking-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 24px;
+      font-size: 0.9rem;
+      color: #ff6b6b;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .famous-ranking-badge:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
+    }
+
+    .famous-ranking-badge .pulse-dot {
+      width: 10px;
+      height: 10px;
+      background: #ef4444;
+      border-radius: 50%;
+      animation: live-pulse 1.5s ease infinite;
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+    }
+
+    .famous-ranking-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .famous-ranking-item {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 24px 28px;
+      background: rgba(13, 24, 41, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .famous-ranking-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .famous-ranking-item:hover::before {
+      left: 100%;
+    }
+
+    .famous-ranking-item:hover {
+      transform: translateX(12px) translateY(-2px);
+      border-color: rgba(0, 224, 164, 0.4);
+      background: rgba(13, 24, 41, 0.9);
+      box-shadow: 0 8px 32px rgba(0, 224, 164, 0.2), 0 0 0 1px rgba(0, 224, 164, 0.1);
+    }
+
+    .famous-ranking-item.rank-1 {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(13, 24, 41, 0.7) 100%);
+      border-color: rgba(255, 215, 0, 0.4);
+      box-shadow: 0 4px 24px rgba(255, 215, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .famous-ranking-item.rank-1:hover {
+      border-color: rgba(255, 215, 0, 0.6);
+      box-shadow: 0 12px 40px rgba(255, 215, 0, 0.3), 0 0 0 1px rgba(255, 215, 0, 0.2);
+    }
+
+    .famous-ranking-item.rank-2 {
+      background: linear-gradient(135deg, rgba(192, 192, 192, 0.15) 0%, rgba(13, 24, 41, 0.7) 100%);
+      border-color: rgba(192, 192, 192, 0.4);
+      box-shadow: 0 4px 24px rgba(192, 192, 192, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .famous-ranking-item.rank-2:hover {
+      border-color: rgba(192, 192, 192, 0.6);
+      box-shadow: 0 12px 40px rgba(192, 192, 192, 0.25), 0 0 0 1px rgba(192, 192, 192, 0.2);
+    }
+
+    .famous-ranking-item.rank-3 {
+      background: linear-gradient(135deg, rgba(205, 127, 50, 0.15) 0%, rgba(13, 24, 41, 0.7) 100%);
+      border-color: rgba(205, 127, 50, 0.4);
+      box-shadow: 0 4px 24px rgba(205, 127, 50, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .famous-ranking-item.rank-3:hover {
+      border-color: rgba(205, 127, 50, 0.6);
+      box-shadow: 0 12px 40px rgba(205, 127, 50, 0.25), 0 0 0 1px rgba(205, 127, 50, 0.2);
+    }
+
+    .famous-ranking-medal {
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
+      font-size: 1.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      position: relative;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .famous-ranking-item:hover .famous-ranking-medal {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .famous-ranking-item.rank-1 .famous-ranking-medal {
+      background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+      color: #1a1a1a;
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+      animation: gold-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes gold-glow {
+      0%, 100% { box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3); }
+      50% { box-shadow: 0 8px 28px rgba(255, 215, 0, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.4); }
+    }
+
+    .famous-ranking-item.rank-2 .famous-ranking-medal {
+      background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 50%, #c0c0c0 100%);
+      color: #1a1a1a;
+      box-shadow: 0 6px 20px rgba(192, 192, 192, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    }
+
+    .famous-ranking-item.rank-3 .famous-ranking-medal {
+      background: linear-gradient(135deg, #cd7f32 0%, #e6a85c 50%, #cd7f32 100%);
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(205, 127, 50, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+    }
+
+    .famous-ranking-item:not(.rank-1):not(.rank-2):not(.rank-3) .famous-ranking-medal {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+      color: var(--text-secondary);
+      font-size: 1.4rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .famous-ranking-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .famous-ranking-store-name {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      letter-spacing: -0.01em;
+    }
+
+    .famous-ranking-region-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 12px;
+      background: linear-gradient(135deg, rgba(0, 224, 164, 0.2) 0%, rgba(0, 224, 164, 0.1) 100%);
+      border: 1px solid rgba(0, 224, 164, 0.4);
+      border-radius: 14px;
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0, 224, 164, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .famous-ranking-item:hover .famous-ranking-region-badge {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 224, 164, 0.3);
+    }
+
+    .famous-ranking-stats {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .famous-ranking-stat-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .famous-ranking-item:hover .famous-ranking-stat-item {
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-1px);
+    }
+
+    .famous-ranking-stat-item strong {
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 1.05em;
+    }
+
+    .famous-ranking-wins {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      padding-left: 20px;
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .famous-ranking-wins-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .famous-ranking-wins-count {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #00e0a4 0%, #00b8d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      text-shadow: 0 0 30px rgba(0, 224, 164, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .famous-ranking-item:hover .famous-ranking-wins-count {
+      transform: scale(1.1);
+      filter: brightness(1.2);
+    }
+
+    .famous-ranking-cta {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .famous-ranking-cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 36px;
+      background: linear-gradient(135deg, #00e0a4 0%, #00b8d4 100%);
+      color: var(--primary-dark);
+      font-weight: 800;
+      border-radius: 20px;
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 1.05rem;
+      box-shadow: 0 6px 24px rgba(0, 224, 164, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .famous-ranking-cta-button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .famous-ranking-cta-button:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .famous-ranking-cta-button:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 12px 40px rgba(0, 224, 164, 0.4);
+    }
+
+    .famous-ranking-cta-button span {
+      transition: transform 0.3s ease;
+    }
+
+    .famous-ranking-cta-button:hover span {
+      transform: translateX(4px);
+    }
+
+    @media (max-width: 768px) {
+      .famous-ranking-section {
+        padding: 60px 16px;
+      }
+
+      .famous-ranking-header {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 32px;
+      }
+
+      .famous-ranking-title {
+        font-size: 1.6rem;
+      }
+
+      .famous-ranking-item {
+        flex-wrap: wrap;
+        padding: 20px;
+        gap: 16px;
+      }
+
+      .famous-ranking-medal {
+        width: 48px;
+        height: 48px;
+        font-size: 1.5rem;
+      }
+
+      .famous-ranking-wins {
+        width: 100%;
+        align-items: flex-start;
+        margin-top: 16px;
+        padding-top: 16px;
+        padding-left: 0;
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .famous-ranking-wins-count {
+        font-size: 2rem;
+      }
+
+      .famous-ranking-store-name {
+        font-size: 1.1rem;
+      }
+
+      .famous-ranking-cta-button {
+        padding: 14px 28px;
+        font-size: 1rem;
+      }
+    }
+
     /* ===== Cumulative Stats Counter ===== */
     .cumulative-section {
       padding: 80px 24px;
@@ -6292,47 +6727,117 @@ $total_numbers_fmt = number_format($total_numbers); // ✅ 7,206 형태
   </script>
   -->
 
-  <!-- Live Activity Feed -->
-  <section class="activity-section">
-    <div class="activity-container">
-      <div class="activity-header">
-        <h3 class="activity-title">
-          <span class="activity-pulse"></span>
-          실시간 분석 현황
+  <!-- Famous Ranking Section -->
+  <?php
+  // 실제 DB 데이터 연동
+  // 판매점 라이브러리 로드
+  $store_lib_path = G5_PATH . '/lib/lotto_store.lib.php';
+  if (file_exists($store_lib_path)) {
+      include_once($store_lib_path);
+  }
+  
+  // TOP 5 명당 판매점 조회 (1등 당첨 횟수 기준)
+  $ranking_sql = "
+    SELECT 
+      s.store_id,
+      s.store_name,
+      s.region1,
+      s.wins_1st,
+      s.wins_2nd,
+      COALESCE(SUM(CASE WHEN w.`rank` = 1 THEN w.prize_amount ELSE 0 END), 0) as total_prize_1st,
+      COALESCE(SUM(CASE WHEN w.`rank` = 2 THEN w.prize_amount ELSE 0 END), 0) as total_prize_2nd,
+      COALESCE(COUNT(w.win_id), 0) as total_wins
+    FROM g5_lotto_store s
+    LEFT JOIN g5_lotto_store_win w ON s.store_id = w.store_id
+    WHERE s.wins_1st > 0
+    GROUP BY s.store_id, s.store_name, s.region1, s.wins_1st, s.wins_2nd
+    ORDER BY s.wins_1st DESC, s.wins_2nd DESC, total_wins DESC
+    LIMIT 5
+  ";
+  
+  $ranking_result = sql_query($ranking_sql);
+  $rank = 0;
+  $has_data = false;
+  
+  // 데이터 존재 여부 확인
+  if ($ranking_result && sql_num_rows($ranking_result) > 0) {
+      $has_data = true;
+  }
+  ?>
+  <section class="famous-ranking-section">
+    <div class="famous-ranking-container">
+      <div class="famous-ranking-header">
+        <h3 class="famous-ranking-title">
+          우리 동네 명당 찾아보기
         </h3>
-        <div class="activity-counter">
-          📊 오늘 총 <strong id="todayCount">1,247</strong>회 분석 완료
+        <div class="famous-ranking-badge">
+          <span class="pulse-dot"></span>
+          <span>실시간 TOP 5</span>
         </div>
       </div>
-      <div class="activity-feed" id="activityFeed">
-        <div class="activity-item">
-          <div class="activity-avatar">김*</div>
-          <div class="activity-content">
-            <p class="activity-text"><strong>김** (서울)</strong> 님이 <span class="style-tag">Hot/Cold 분석</span>을 완료했습니다</p>
+
+      <div class="famous-ranking-list">
+        <?php if ($has_data): ?>
+          <?php while ($row = sql_fetch_array($ranking_result)): 
+            $rank++;
+            $rank_class = $rank <= 3 ? "rank-{$rank}" : "";
+            $medal_icon = $rank == 1 ? "🥇" : ($rank == 2 ? "🥈" : ($rank == 3 ? "🥉" : $rank));
+            $total_prize = ($row['total_prize_1st'] + $row['total_prize_2nd']) / 100000000; // 억원 단위
+            $total_wins = (int)$row['total_wins'] ?: (int)$row['wins_1st'] + (int)$row['wins_2nd'];
+          ?>
+          <div class="famous-ranking-item <?= $rank_class ?>" onclick="window.location.href='/stores/?id=<?= (int)$row['store_id'] ?>'">
+            <div class="famous-ranking-medal"><?= $medal_icon ?></div>
+            <div class="famous-ranking-info">
+              <div class="famous-ranking-store-name">
+                <?= htmlspecialchars($row['store_name']) ?>
+                <?php if (!empty($row['region1'])): ?>
+                  <span class="famous-ranking-region-badge"><?= htmlspecialchars($row['region1']) ?></span>
+                <?php endif; ?>
+              </div>
+              <div class="famous-ranking-stats">
+                <div class="famous-ranking-stat-item">
+                  🏅 <strong>1등</strong> <?= number_format((int)$row['wins_1st']) ?>회
+                </div>
+                <?php if ($total_prize > 0): ?>
+                  <div class="famous-ranking-stat-item">
+                    💰 누적 <strong><?= number_format($total_prize, 0) ?>억원</strong>
+                  </div>
+                <?php endif; ?>
+              </div>
+            </div>
+            <div class="famous-ranking-wins">
+              <div class="famous-ranking-wins-label">당첨 횟수</div>
+              <div class="famous-ranking-wins-count"><?= number_format($total_wins) ?></div>
+            </div>
           </div>
-          <span class="activity-time">방금 전</span>
-        </div>
-        <div class="activity-item">
-          <div class="activity-avatar">이*</div>
-          <div class="activity-content">
-            <p class="activity-text"><strong>이** (부산)</strong> 님이 <span class="style-tag">밸런스 최적화</span>를 완료했습니다</p>
+          <?php endwhile; ?>
+        <?php else: ?>
+          <!-- 데이터가 없을 때 표시 -->
+          <div class="famous-ranking-item">
+            <div class="famous-ranking-medal">📊</div>
+            <div class="famous-ranking-info">
+              <div class="famous-ranking-store-name">
+                데이터 준비중...
+              </div>
+              <div class="famous-ranking-stats">
+                <div class="famous-ranking-stat-item">
+                  명당 랭킹 데이터를 수집 중입니다
+                </div>
+              </div>
+            </div>
+            <div class="famous-ranking-wins">
+              <div class="famous-ranking-wins-label">준비중</div>
+              <div class="famous-ranking-wins-count">-</div>
+            </div>
           </div>
-          <span class="activity-time">1분 전</span>
-        </div>
-        <div class="activity-item">
-          <div class="activity-avatar">박*</div>
-          <div class="activity-content">
-            <p class="activity-text"><strong>박** (대전)</strong> 님이 <span class="style-tag">홀짝/고저 분석</span>을 완료했습니다</p>
-          </div>
-          <span class="activity-time">2분 전</span>
-        </div>
-        <div class="activity-item">
-          <div class="activity-avatar">최*</div>
-          <div class="activity-content">
-            <p class="activity-text"><strong>최** (인천)</strong> 님이 <span class="style-tag">AI 추천</span>을 완료했습니다</p>
-          </div>
-          <span class="activity-time">3분 전</span>
-        </div>
+        <?php endif; ?>
+      </div>
+
+      <div class="famous-ranking-cta">
+        <a href="/stores/" class="famous-ranking-cta-button">
+          전체 명당 랭킹 보기
+          <span>→</span>
+        </a>
       </div>
     </div>
   </section>
