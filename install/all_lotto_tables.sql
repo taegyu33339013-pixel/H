@@ -21,10 +21,14 @@ CREATE TABLE IF NOT EXISTS `g5_lotto_store` (
   `region2` varchar(50) DEFAULT NULL COMMENT '시/군/구',
   `region3` varchar(50) DEFAULT NULL COMMENT '읍/면/동',
   `phone` varchar(20) DEFAULT NULL COMMENT '전화번호',
+  `opening_hours` varchar(100) DEFAULT NULL COMMENT '영업시간 (예: 09:00-22:00)',
+  `store_image` varchar(255) DEFAULT NULL COMMENT '판매점 이미지 URL',
   `latitude` decimal(10,7) DEFAULT NULL COMMENT '위도',
   `longitude` decimal(10,7) DEFAULT NULL COMMENT '경도',
   `wins_1st` int(11) DEFAULT 0 COMMENT '누적 1등 당첨 횟수',
   `wins_2nd` int(11) DEFAULT 0 COMMENT '누적 2등 당첨 횟수',
+  `review_rating` decimal(3,2) DEFAULT NULL COMMENT '평균 리뷰 평점 (0.00-5.00)',
+  `review_count` int(11) DEFAULT 0 COMMENT '리뷰 개수',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`store_id`),
@@ -125,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `g5_lotto_charge_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='크레딧 충전 주문';
 
 -- =====================================================
--- 3. 마이그레이션 (기존 테이블에 region3 추가)
+-- 3. 마이그레이션 (기존 테이블에 추가 필드)
 -- =====================================================
 
 -- region3 컬럼 추가 (없는 경우)
@@ -134,4 +138,17 @@ ALTER TABLE `g5_lotto_store`
 
 -- region3 인덱스 추가
 ALTER TABLE `g5_lotto_store` 
-  ADD INDEX `idx_region3` (`region3`);
+  ADD INDEX IF NOT EXISTS `idx_region3` (`region3`);
+
+-- 영업시간 필드 추가 (LocalBusiness Schema 강화)
+ALTER TABLE `g5_lotto_store` 
+  ADD COLUMN IF NOT EXISTS `opening_hours` varchar(100) DEFAULT NULL COMMENT '영업시간 (예: 09:00-22:00)' AFTER `phone`;
+
+-- 판매점 이미지 필드 추가
+ALTER TABLE `g5_lotto_store` 
+  ADD COLUMN IF NOT EXISTS `store_image` varchar(255) DEFAULT NULL COMMENT '판매점 이미지 URL' AFTER `opening_hours`;
+
+-- 리뷰 평점 필드 추가 (향후 리뷰 시스템 연동)
+ALTER TABLE `g5_lotto_store` 
+  ADD COLUMN IF NOT EXISTS `review_rating` decimal(3,2) DEFAULT NULL COMMENT '평균 리뷰 평점 (0.00-5.00)' AFTER `wins_2nd`,
+  ADD COLUMN IF NOT EXISTS `review_count` int(11) DEFAULT 0 COMMENT '리뷰 개수' AFTER `review_rating`;

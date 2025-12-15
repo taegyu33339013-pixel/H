@@ -124,6 +124,7 @@
 ### 1. 데이터베이스 테이블
 다음 테이블들이 존재해야 합니다:
 - `g5_lotto_store` ✅ (cron/lotto_store_sync.php에서 자동 생성)
+  - 이미지 필드 포함: `store_image`, `opening_hours`, `review_rating`, `review_count`
 - `g5_lotto_store_win` ✅ (cron/lotto_store_sync.php에서 자동 생성)
 - `g5_lotto_draw` ✅ (그누보드 설치 시 생성)
 - `g5_lotto_credit` ⚠️ **CREATE TABLE 구문 필요** → `install/lotto_credit_tables.sql` 생성됨
