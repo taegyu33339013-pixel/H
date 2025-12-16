@@ -1,9 +1,0 @@
-# /draw/.htaccess - 회차별 결과 URL Rewriting
-
-RewriteEngine On
-
-# 최신 회차: /draw/latest
-RewriteRule ^latest/?$ index.php?round=0 [L,QSA]
-
-# 회차 번호: /draw/1202
-RewriteRule ^([0-9]+)/?$ index.php?round=$1 [L,QSA]
