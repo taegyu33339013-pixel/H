@@ -979,6 +979,21 @@ if (!$is_region_paging) {
       min-height: 100vh;
     }
     
+    /* ===== App Wrapper: PC 480px 중앙 / 모바일 100% ===== */
+    .app-wrapper {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: var(--bg-deep);
+    }
+    
+    /* 모바일에서는 100% */
+    @media (max-width: 480px) {
+      .app-wrapper {
+        max-width: 100%;
+      }
+    }
+    
     a { color: inherit; text-decoration: none; }
     
     /* ===== Header ===== */
@@ -992,7 +1007,6 @@ if (!$is_region_paging) {
     }
     
     .header-inner {
-      max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
       height: 56px;
@@ -1104,7 +1118,6 @@ if (!$is_region_paging) {
     
     /* ===== Main Container ===== */
     .main {
-      max-width: 1200px;
       margin: 0 auto;
       padding: 24px 20px 100px;
     }
@@ -1450,7 +1463,6 @@ if (!$is_region_paging) {
     }
     
     .detail-hero-inner {
-      max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
       display: flex;
@@ -1557,7 +1569,6 @@ if (!$is_region_paging) {
     }
     
     .detail-tabs-inner {
-      max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
       display: flex;
@@ -1883,7 +1894,6 @@ if (!$is_region_paging) {
     }
     
     .bottom-bar-inner {
-      max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
       height: 48px;
@@ -2058,6 +2068,8 @@ if (!$is_region_paging) {
   </style>
 </head>
 <body>
+
+<div class="app-wrapper">
 
 <!-- ========== Header ========== -->
 <header class="header">
@@ -2670,6 +2682,8 @@ if (!$is_region_paging) {
   50% { opacity: 0.5; }
 }
 </style>
+
+</div><!-- .app-wrapper -->
 
 </body>
 </html>
